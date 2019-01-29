@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>首页</title>
+    <script src="../js/common/setDpr.js"></script>
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/loginPage.css" />
+    <link rel="stylesheet" href="../css/toast.css" />
+    <style type="text/css">
+      [v-cloak] {
+        display: none;
+      }
+
+      input {
+        border-width: 0px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="root">
+			<div class="bgIndex">
+				<span class="appName"> 金码头 </span>
+				<span class="slogan"> 资料少，下款快<br />1次信用评估，多家平台响应</span>
+				<div class="collection">
+					<div class="item">
+						<img class="fontTitle" src="../img/order/homeRisk.png" alt="" />
+						<span class="itemTitle">风控把关</span>
+					</div>
+					<div class="item">
+						<img class="fontTitle" src="../img/order/homeMatch.png" alt="" />
+						<span class="itemTitle">智能匹配</span>
+					</div>
+					<div class="item">
+						<img class="fontTitle" src="../img/order/homeSpecialty.png" alt="" />
+						<span class="itemTitle">专业快捷</span>
+					</div>
+				</div>
+				<div class="bg"><span class="bgTitle">人人可借，无抵押无担保</span></div>
+			</div>
+      <div class="mobile row">
+        <img class="mobileIcon" src="../img/icon_iphone@2x.png" alt="" />
+        <input
+          class="inputBox"
+          type="tel"
+          maxlength="11"
+          placeholder="请输入本人常用手机号"
+          v-model="mobileText"
+          v-on:input="mobileDidInput()"
+        />
+      </div>
+      <div
+        class="doneBtn"
+        @click="clickDoneAction()"
+        v-bind:class="{active: isActive}"
+      >
+        <span class="doneBtnTitle" v-bind:class="{active: isActive}"
+          >立即申请</span
+        >
+      </div>
+      <div class="loginViewBG" v-show="showLoginView" v-cloak>
+        <div class="loginView">
+          <img
+            class="closeIcon"
+            src="../img/icon_code_close@2x.png"
+            alt=""
+            @click="clickCloseAction()"
+          />
+          <span class="loginViewTitle">请输入验证码</span>
+          <span class="loginViewMobile" v-cloak>{{ mobileText }}</span>
+          <div class="inputBG row">
+            <input
+              class="inputBox"
+              type="tel"
+              maxlength="4"
+              placeholder="请输入验证码"
+              v-model="verifyCodeText"
+              v-on:input="veifyCodeDidInput()"
+            />
+            <span
+              class="second"
+              v-bind:class="{active: isActive}"
+              @click="sendCodeAction()"
+              v-cloak
+              >{{ countBtnTitle }}
+              <img
+                class="loading"
+                src="../img/icon_common_loading.gif"
+                alt=""
+                v-show="showLoading"
+                v-cloak
+              />
+            </span>
+          </div>
+          <div
+            class="loginBtn"
+            v-bind:class="{active: verifyisActive}"
+            @click="loginAction()"
+          >
+            <span class="loginBtnTitle">确定</span>
+          </div>
+          <p class="additional">
+            已同意《<span class="additionHighLight" @click="gspAction()"
+              >服务许可协议</span
+            >》
+          </p>
+        </div>
+      </div>
+    </div>
+    <script src="../js/common/zepto.min.js"></script>
+    <script src="../js/common/JanesiBridges.js"></script>
+    <script src="../js/common/vue.js"></script>
+    <script src="../js/toast.js"></script>
+
+    <script>
+      new Vue({
+        el: "#root",
+        data: {
+          count: 60,
+          countBtnTitle: "获取",
+          showLoginView: false,
+          mobileText: "",
+          verifyCodeText: "",
+          isActive: false,
+          verifyisActive: false,
+          isClickSendBtn: false,
+          showLoading: false,
+          pageMap: {
+            "1": "index", //首页
+            "2": "identity", //填写省份证页
+            "3": "job", //工作信息页面
+            "4": "linkman", //添加联系人页面
+            "5": "bank", //银行卡信息页面
+            "6": "operator", //运营商授权页面
+            "7": "other", //其他信息页面
+            "8": "creditEvaluate", //去支付
+            "9": "reputation" //信誉资质页面
+          }
+        },
+        created: function() {},
+        mounted: function() {
+          // window.JanesiApi.reqUrl = "http://10.10.10.81:8091";
+        },
+        methods: {
+          gspAction() {
+            window.JanesiBridge.callNative("open", {
+              url: 'loanMarket-app/templates/gsp.html',
+              type: 2
+            });
+          },
+          clickDoneAction() {
+            if (this.mobileText.length < 11) return;
+            var value = !this.showLoginView;
+            this.showLoginView = value;
+          },
+          clickCloseAction() {
+            var value = !this.showLoginView;
+            this.showLoginView = value;
+          },
+          mobileDidInput() {
+            this.isActive = this.mobileText.length >= 11;
+          },
+          veifyCodeDidInput() {
+            this.verifyisActive = this.verifyCodeText.length == 4;
+          },
+          sendCodeAction() {
+            var that = this;
+            if (this.isClickSendBtn == true) return;
+            this.isClickSendBtn = true;
+            this.showLoading = true;
+            window.JanesiApi.sendApi(
+              "/app/goldenbox/sms/send_verify",
+              "post",
+              {
+                phone: that.mobileText
+              },
+              function(e) {
+                that.showLoading = false;
+                if (e.code == 0) {
+                  that.countDownAction();
+                } else {
+                  that.isClickSendBtn = false;
+                  toast({
+                    message: e.msg ? e.msg : "请求出错",
+                    time: 2000
+                  });
+                }
+              }
+            );
+          },
+
+          countDownAction() {
+            if (this.showLoginView == true) {
+              var that = this;
+              var timer = setInterval(function() {
+                if (that.count <= 0) {
+                  clearInterval(timer);
+                  that.countBtnTitle = "获取";
+                  that.count = 60;
+                  that.isClickSendBtn = false;
+                } else {
+                  that.countBtnTitle = that.count + "S";
+                }
+                that.count--;
+                console.log("title", that.countBtnTitle);
+              }, 1000);
+            }
+          },
+          loginAction() {
+            var that = this;
+            if (this.verifyCodeText.length == 4) {
+              window.JanesiApi.base;
+              window.JanesiApi.sendApi(
+                "/app/goldenbox/user/login",
+                "post",
+                {
+                  phone: that.mobileText,
+                  verify: that.verifyCodeText
+                },
+                function(e) {
+                  that.isClickSendBtn = false;
+                  if (e.code == 0) {
+                    window.JanesiBridge.callNativeWithCallBack(
+                      "setUserInfo",
+                      e.result,
+                      function(res) {
+                        var targetLink = e.result.page;
+                        var type = 2;
+                        var path = "loanMarket-app/templates/identity.html";
+                        if (targetLink) {
+                          if (e.result.infoStep == 0) {
+                            type = 4;
+                          }
+                          if (targetLink.indexOf("http") == 0) {
+                            path = targetLink;
+                          } else {
+                            path =
+                              "loanMarket-app/templates/" +
+                              targetLink +
+                              ".html";
+                          }
+                        }
+                        var loginType = 2;
+                        var homePage = "loanMarket-app/templates/index.html"
+                        if(targetLink == 'loginHome'){
+                          loginType =1;
+                          homePage = "loanMarket-app/templates/loginHome.html"
+                        }
+                        window.JanesiBridge.callNative("login", {
+                          'page': homePage,
+                          'type': loginType
+                        });
+                        window.JanesiBridge.callNative("open", {
+                          url: path,
+                          type: type
+                        });
+                      }
+                    );
+                  } else {
+                    //验证失败的提示x
+                    toast({
+                      message: e.msg,
+                      time: 2000
+                    });
+                  }
+                }
+              );
+            }
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

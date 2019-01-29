@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>我的</title>
+    <script src="../js/common/setDpr.js"></script>
+    <link rel="stylesheet" href="../css/common/common.css">
+	<script src="../js/common/polyfill.min.js"></script>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+        body {
+            background: #fff;
+        }
+        #root {
+            padding: .45rem;
+            box-sizing: border-box;
+            margin-bottom: 1rem;
+        }
+        .userInfo {
+            margin-bottom: .44rem;
+        }
+        .avator {
+            width: 1.44rem;
+            height: 1.44rem;
+            border-radius: 50%;
+        }
+        .userInfo p {
+            font-size: .36rem;
+            color: #333;
+            margin-left: .4rem;
+        }
+        /* 列表导航 */
+        .listContent li:nth-of-type(1) {
+            margin-top: 1.32rem;
+        }
+        .iconList {
+            height: 0.48rem;
+            margin: .8rem 0;
+        }
+        .iconList img {
+            width: 0.48rem;
+            height: 0.48rem;
+        }
+        .iconList p {
+            margin-left: .26rem;
+            font-size: .32rem;
+            color: #333;
+        }
+        .listContent li p {
+            position: relative;
+            width: 100%;
+        }
+        .listContent li p::after {
+            content: "";
+            display: inline-block;
+            height: .12rem;
+            width: .12rem;
+            border-width: 2px 2px 0 0;
+            border-color: #C8C8CD;
+            border-style: solid;
+            transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
+            position: absolute;
+            top: 50%;
+            right: 0;
+            margin-top: -4px;
+        }
+
+        /* navBar */
+        .navBar {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1rem;
+            background: #fff;
+        }
+
+        .navBar p {
+            color: #999;
+        }
+        .navBar .personCenter .selectFont {
+            color: #1BAC1B;
+        }
+        .navBarIcon {
+            width: 0.48rem;
+            height: 0.48rem;
+        }
+    </style>
+    
+</head>
+
+<body>
+    <div id="root" >
+        <div class="userInfo row flex_alcc">
+            <img class="avator" v-bind:src="userInfo.avator" alt="">
+            <p>{{userInfo.phone}}</p>
+        </div>
+        <ul class="listContent">
+            <li class="iconList row flex_alcc" @click="myOrder()">
+                <img src="../img/order/iconOrder.png" alt="">
+                <p>我的订单</p>
+            </li>
+            <li class="iconList row flex_alcc" @click="reputation()">
+                <img src="../img/order/iconReputation.png" alt="">
+                <p>信誉资质</p>
+            </li>
+            <li class="iconList row flex_alcc" @click="userInfomation()">
+                <img src="../img/order/iconPersonData.png" alt="">
+                <p>个人资料</p>
+            </li>
+            <li class="iconList row flex_alcc" @click="commonQuestion()">
+                <img src="../img/order/iconQuestion.png" alt="">
+                <p>常见问题</p>
+            </li>
+            <li class="iconList row flex_alcc" @click="setting()">
+                <img src="../img/order/iconSetUp.png" alt="">
+                <p>设置</p>
+            </li>
+        </ul>
+        <!-- navBar -->
+        <div class="navBar row flex_jcsa">
+            <div class="home wrapper" @click="loginHome()">
+                <img class="navBarIcon" src="../img/order/homeTabBar_gray.png">
+                <p>首页</p>
+            </div>
+            <div class="order wrapper" @click="myOrder()">
+                <img class="navBarIcon" src="../img/order/orderCenter_gray.png">
+                <p >订单</p>
+            </div>
+            <div class="personCenter wrapper">
+                <img class="navBarIcon" src="../img/order/personCenter_G.png" alt="">
+                <p class="selectFont"> 我的</p>
+            </div>
+
+        </div>
+    </div>
+</body>
+<script src="../js/common/vue.js"></script>
+<script src="../js/common/zepto.min.js"></script>
+<script src="../js/common/JanesiBridges.js"></script>
+<script>
+    var app = new Vue({
+        el: '#root',
+        data: {
+            userInfo:{
+                avator:'',
+                phone:''
+            }
+        },
+        created() {
+
+        },
+        mounted() {
+            var that = this;
+             // window.JanesiApi.reqUrl = 'http://10.10.10.65:8091'
+             console.log(window.JanesiApi.reqUrl)
+             that.getInfo()
+
+        },
+        methods: {
+            getInfo(){
+                var that = this
+                window.JanesiApi.sendApi('/app/goldenbox/user/info', 'post', {
+                    // userId: '8S9PLqck8VA=', 
+                }, function (e) {
+                    console.log(e)
+                    var res = e.result;
+                    that.userInfo = res;
+                    if(res.avator==''||res.avator==null){
+                        that.userInfo.avator ='../img/1.jpg'
+                    }
+
+                })
+            },
+            // 我的订单
+            myOrder(){
+                window.JanesiBridge.callNative('open', {
+                    'url': 'loanMarket-app/templates/myOrder.html'
+                });
+            },
+            // 信誉资质
+            reputation(){
+                window.JanesiBridge.callNative('open', {
+                    'url': 'loanMarket-app/templates/reputationTo.html'
+                });
+            },
+            // 个人资料 ？
+            userInfomation(){
+                window.JanesiBridge.callNative('open', {
+                    'url': 'loanMarket-app/templates/personalProfilePage.html'
+                });
+            },
+            // 常见问题 ？
+            commonQuestion(){
+                window.JanesiBridge.callNative('open', {
+                    'url': 'loanMarket-app/templates/commonQuestion.html'
+                });
+            },
+            // 设置
+            setting(){
+                window.JanesiBridge.callNative('open', {
+                    'url': 'loanMarket-app/templates/setting.html'
+                });
+            },
+            
+
+
+
+        }
+    })
+</script>
+
+</html>

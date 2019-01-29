@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>运营商认证</title>    
+    <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/1.1.2/weui.min.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/font/font_289796_9k3qssaanx/iconfont.css">
+    
+<style>
+     .iconfont{
+        font-size:20px;
+    } 
+    .icon-mimakejian{
+        color:#1AAD19;
+    }
+    .tips{
+        display: flex;
+        justify-content: space-between;
+        padding:10px 15px 0 15px;
+        font-size: 12px;
+        color:#1AAD19;
+    }
+</style>
+</head>
+<body>
+    <div id="root">
+        <div class="weui-progress">
+            <div class="weui-progress__bar">
+                <div class="weui-progress__inner-bar js_progress" style="width: 80%;"></div>
+            </div>
+        </div>
+        <div class="weui-cells totalCess">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p >{{operatorType}}</p>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p >{{operatorNum}}</p>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <input class="weui-input pass" type="text"  v-model="operatorPassword" placeholder="请输入服务密码" v-on:input="writeServer">
+                </div>
+                <i class="iconfont icon-mimakejian" @click="changeView"></i>
+            </div>
+        </div>
+        <label for="weuiAgree" class="weui-agree" >
+            <input id="weuiAgree" type="checkbox" class="weui-agree__checkbox" @click="allowAgreement">
+            <span class="weui-agree__text" >
+                已阅读并同意<a href="javascript:void(0);" @click="openAgreement">用户信息收集授权协议</a>
+            </span>
+        </label>
+        <div class="tips">   
+            <!--<div class="left" @click="netlink">拨号转网用户入口</div>-->
+            <div class="right" @click="forget">忘记密码</div>
+        </div>
+        
+        <div class="footer">
+            <a href="javascript:;" class="weui-btn weui-btn_primary" @click="next" >提交</a>   
+        </div>
+    </div>
+</body>
+    <script type="text/javascript" src="https://res.wx.qq.com/open/libs/weuijs/1.1.3/weui.min.js"></script>
+    <script src="../js/common/vue.js"></script>  
+    <script src="../js/common/zepto.min.js"> </script>
+    <script src="../js/common/JanesiBridges.js"></script>  
+    <script>
+        new Vue({
+            el:'#root',
+            data:{
+                operatorType:'中国联通',
+                operatorNum:'17521081854',
+                operatorPassword:'',
+                isChange:true,
+                passwordView:'',
+                allow:'0',
+            },
+            created(){
+                this.getData()
+            },
+            mounted(){
+                
+            },
+            methods:{
+                allowAgreement(){
+                    if(this.allow=='0'){
+                        this.allow='1'
+                    }else{
+                        this.allow='0'
+                    }
+                },
+                openAgreement(){
+
+                    window.JanesiBridge.callNative('open', {
+                        'url': 'loanMarket-app/templates/allowAgreement.html'
+                        });
+                },
+
+                //密码是否可见
+                changeView(){
+                   
+
+
+
+                    if($('.iconfont').hasClass('icon-mimakejian')){
+                        $('.iconfont').removeClass('icon-mimakejian')
+                        $('.iconfont').addClass('icon-mimakejian1')
+                         $(".pass").attr("type","password");
+                        // this.passwordView=this.operatorPassword;
+                        // this.operatorPassword='******'
+                    }else{
+                        $('.iconfont').removeClass('icon-mimakejian1')
+                        $('.iconfont').addClass('icon-mimakejian');
+                         $(".pass").attr("type","text");
+                        
+                        // this.operatorPassword=this.passwordView;
+                    }
+                    
+                },
+
+                getData(){
+                    //接口获取运营商类型和手机号码
+                    var that=this;
+                    var reqApi = '/app/goldenbox/user/info';
+                    window.JanesiApi.sendApi(reqApi, 'post', {
+                        // userId:'Fgv6ZcZdR74='
+                    }, function (res) {
+                        console.log(res)
+                        that.operatorNum=res.result.phone;
+                        that.operatorType=res.result.operatorSupply;
+                    })
+                    if(localStorage.getItem("operatorPassword")){
+                        this.operatorPassword=localStorage.getItem("operatorPassword");
+                    }
+                },
+                writeServer(){
+                    localStorage.setItem("operatorPassword",this.operatorPassword)	
+                },
+                next(){
+                    var that=this;                    
+                    if(that.operatorPassword==''){
+                        weui.topTips('请填写服务密码');
+                    }else if(that.allow=='0'){
+                        weui.topTips('请阅读并同意');
+                    }else{
+                        console.log('ok')
+//                      localStorage.setItem('operatorPassword',that.operatorPassword);
+                        // window.location.href = '/app/goldenbox/home/authorizing';
+                        // window.location.href="authorizing.html"
+                        window.JanesiBridge.callNative('open', {
+                        'url': 'loanMarket-app/templates/authorizing.html'
+                        });
+                    }
+                },
+
+                //拨号转网
+                netlink(){
+                    
+                },
+                //忘记密码
+                forget(){
+					window.JanesiBridge.callNative('open', {
+                        'url': 'loanMarket-app/templates/forgetPassword.html'
+                        });
+                }
+            }
+        })
+    </script>
+</html>

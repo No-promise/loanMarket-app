@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>其他信息</title>    
+    <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/1.1.2/weui.min.css">
+    <link rel="stylesheet" href="../css/index.css"> 
+    
+</head>
+<body>
+    <div id="root">
+        <div class="weui-progress">
+            <div class="weui-progress__bar">
+                <div class="weui-progress__inner-bar js_progress" style="width: 90%;"></div>
+            </div>
+        </div>
+        <div class="weui-cells totalCess">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>常用邮箱号</p>
+                </div>
+                <div class="weui-cell__ft" >{{emailNum}}</div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>QQ账号</p>
+                </div>
+                <div class="weui-cell__ft" >{{QQNum}}</div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>微信账号</p>
+                </div>
+                <div class="weui-cell__ft" >{{wechartNum}}</div>
+            </div>
+    
+        </div>
+        <div class="footer">
+                <a href="javascript:;" class="weui-btn weui-btn_primary" @click="next">下一步</a>   
+        </div>
+    </div>
+</body>
+    <script type="text/javascript" src="https://res.wx.qq.com/open/libs/weuijs/1.1.3/weui.min.js"></script>
+    <script src="../js/common/vue.js"></script>
+    <script src="../js/common/zepto.min.js"></script>
+    <script src="../js/common/JanesiBridges.js"></script>
+    <script>
+        new Vue({
+            el:'#root',
+            data:{
+                dataFlag4:'1',
+                emailNum:'',
+                QQNum:'',
+                wechartNum:'',
+            },
+            created(){
+                this.getData();
+            },
+            mounted(){
+
+            },
+            methods:{
+                getData(){
+                    console.log(localStorage.getItem("emailNum"))
+                    //
+                    if(localStorage.getItem("dataFlag4")){
+                        this.dataFlag4=localStorage.getItem("dataFlag4");    
+                    }
+                    //如果已经提交过数据就不再接收修改过的数据,
+                    if(this.dataFlag4=='1'){
+                        this.emailNum=localStorage.getItem("emailNum");
+                        this.QQNum=localStorage.getItem("QQNum");
+                        this.wechartNum=localStorage.getItem("wechartNum");
+
+                        localStorage.setItem("preemailNum",this.emailNum)
+                        localStorage.setItem("preQQNum",this.QQNum)
+                        localStorage.setItem("prewechartNum",this.wechartNum)
+                    }else{
+
+                        this.emailNum=localStorage.getItem("preemailNum");
+                        this.QQNum=localStorage.getItem("preQQNum");
+                        this.wechartNum=localStorage.getItem("prewechartNum");
+                    }
+                    
+                },
+                //下一步提交过数据就将开关关闭，不再接收新数据
+                //数据提交在这里,并且跳转页面
+                next(){
+                    localStorage.setItem("dataFlag4",'0');    
+                    var reqApi = '/app/goldenbox/user/save_other';
+                    window.JanesiApi.sendApi(reqApi, 'post', {
+                        'email':this.emailNum,
+                        'qqNum':this.QQNum,
+                        'wxNum':this.wechartNum,
+                    }, function (res) {
+                        console.log(res)
+                        if(res.result){
+                        //    var timeStamp = Date.parse(new Date());
+                        // window.location.href = '/app/goldenbox/home/index?time='+timeStamp;
+                        window.JanesiBridge.callNative('open', {
+                        'url': 'loanMarket-app/templates/submitInfo.html'
+                        });
+                        }
+                    })
+                }
+            }
+        })
+    </script>
+</html>

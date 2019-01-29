@@ -1,0 +1,245 @@
+html,
+body {
+  background-color: #ffffff;
+  width: 100%;
+  height: 100%;
+}
+#root {
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+  font-family: "PingFang SC", "Microsoft YaHei", "SimSun", "Arial", sans-serif;
+  position: relative;
+  
+  
+}
+.bgIndex {
+	padding-top: 1.08rem;
+    box-sizing: border-box;
+    text-align: center;
+}
+.topImg {
+  
+    width: 6.86rem;
+}
+
+.collection {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 0.39rem;
+}
+.item {
+  text-align: center;
+}
+.itemTitle {
+  font-size: 12px;
+  font-family: PingFangSC-Regular;
+  color: #6D6D6D;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+.fontTitle {
+  width: 0.74rem;
+  height: 0.74rem;
+  background-size: 0.74rem 0.74rem;
+}
+.bg {
+  width: 100%;
+  margin-top: 0.6rem;
+  height: 10px;
+  background-color: #F5F5F5;
+}
+.bgTitle {
+  font-size: 0.28rem;
+  font-family: PingFangSC-Regular;
+  color: rgba(255, 255, 255, .9);
+  line-height: 2.5rem;
+}
+.mobile {
+  height: 0.92rem;
+  border-radius: 5px;
+  border: 1px solid;
+  border-color: #dddddd;
+  margin-left: 0.76rem;
+  margin-right: 0.76rem;
+  box-sizing: border-box;
+  margin-top: 0.66rem;
+  padding-right: 0.2rem;
+}
+.mobileIcon {
+  width: 0.5rem;
+  height: 0.58rem;
+  margin-top: 0.15rem;
+  margin-left: 0.12rem;
+  margin-right: 0.08rem;
+}
+.inputBox {
+  align-self: stretch;
+  flex-grow: 1;
+  font-size: 0.28rem;
+}
+.inputBox:focus {
+  outline: none;
+}
+.doneBtn {
+  height: 0.92rem;
+  border-radius: 5px;
+  margin-left: 0.76rem;
+  margin-right: 0.76rem;
+  box-sizing: border-box;
+  margin-top: 0.17rem;
+  background: rgba(222, 222, 222, 1);
+  text-align: center;
+}
+
+.doneBtn.active {
+  background-color: #09bb07;
+}
+
+.doneBtnTitle {
+  line-height: 0.92rem;
+  font-size: 0.36rem;
+  font-family: PingFangSC-Regular;
+  color: rgba(88, 88, 88, 0.6);
+  font-weight: 400;
+}
+
+.doneBtnTitle.active {
+  color: rgba(255, 255, 255, 1);
+}
+
+input::-webkit-input-placeholder {
+  color: #cccccc;
+  font-size: 0.28rem;
+}
+.loginViewBG {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  position: absolute;
+  top: 0rem;
+}
+
+.loginView {
+  position: absolute;
+  width: 6.2rem;
+  height: 5.2rem;
+  background: rgba(255, 255, 255, 1);
+  border-radius: 12px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.closeIcon {
+  width: 0.44rem;
+  height: 0.44rem;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+.loginViewTitle {
+  width: 100%;
+  text-align: center;
+  font-size: 0.28rem;
+  font-family: PingFangSC-Regular;
+  font-weight: 400;
+  color: rgba(53, 53, 53, 1);
+  display: block;
+  margin-top: 0.5rem;
+}
+
+.loginViewMobile {
+  width: 100%;
+  text-align: center;
+  font-size: 0.42rem;
+  font-family: PingFangSC-Regular;
+  font-weight: 400;
+  color: rgba(53, 53, 53, 1);
+  margin-top: 0.36rem;
+  display: block;
+}
+
+.inputBG {
+  position: relative;
+  height: 0.8rem;
+  margin: 0.3rem 0.3rem 0 0.3rem;
+}
+
+.inputBG::after {
+  content: "";
+  display: inline-block;
+  height: 1px;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  background-color: #09bb07;
+  left: 0;
+}
+
+.second {
+  display: block;
+  position: relative;
+  width: 1rem;
+  text-align: center;
+  line-height: 0.8rem;
+  color: #09bb07;
+}
+
+.second.active {
+}
+
+.second::before {
+  content: "";
+  display: inline-block;
+  height: 0.42rem;
+  width: 1px;
+  position: absolute;
+  left: 0;
+  top: 0.2rem;
+  background-color: #dddddd;
+}
+
+.loginBtn {
+  margin: 0.48rem 0.3rem 0 0.3rem;
+  height: 0.88rem;
+  border-radius: 5px;
+  text-align: center;
+  background: rgba(222, 222, 222, 1);
+}
+
+.loginBtn.active {
+  background: rgba(9, 187, 7, 1);
+}
+
+.loginBtnTitle {
+  font-size: 0.36rem;
+  font-family: PingFangSC-Regular;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 1);
+  line-height: 0.88rem;
+}
+
+.additional {
+  margin-left: 0.3rem;
+  margin-top: 0.24rem;
+  font-size: 0.24rem;
+  font-family: PingFangSC-Regular;
+  font-weight: 400;
+  color: rgba(178, 178, 178, 1);
+}
+
+.additionHighLight {
+  color: #576b95;
+}
+
+
+.loading {
+
+  position: absolute;
+  right: -15px;
+  width: 0.72rem;
+  top: 0.11rem;
+}

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,user-scalable=0"
+    />
+    <title>完善资料-身份信息</title>
+    <link
+      rel="stylesheet"
+      href="https://res.wx.qq.com/open/libs/weui/1.1.2/weui.min.css"
+    />
+    <link rel="stylesheet" href="../css/identifyVerifyPage.css" />
+    <link rel="stylesheet" href="../css/toast.css" />
+
+    
+    <style type="text/css">
+      [v-cloak] {
+        display: none;
+      }
+
+      .weui-cells {
+        margin-top: 0px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="root">
+      <div class="weui-progress">
+        <div class="weui-progress__bar">
+          <div
+            class="weui-progress__inner-bar js_progress"
+            style="width: 10%;"
+          ></div>
+        </div>
+      </div>
+
+      <span class="titleDescription"
+        >身份证信息将通过公安部认证，非本人信息不得通过审核</span
+      >
+      <div class="uploadIDCard row flex_jcsa">
+        <div class="item wrapper">
+          <form id="uploadForm_left" enctype="multipart/form-data">
+            <input
+              class="selectImg"
+              id="left-image-file"
+              type="file"
+              accept="image/jpg,image/jpeg,image/png"
+              contenteditable="false"
+              max="1"
+              v-on:change="leftDidInput()"
+            />
+            <span class="idcardTitle">身份证人像面</span>
+            <img
+              class="idbgIcon"
+              id="leftImg_preview"
+              src="../img/idverify_bg2@2x.png"
+              alt=""
+            />
+          </form>
+        </div>
+        <div class="item wrapper">
+          <form id="uploadForm_right" enctype="multipart/form-data">
+            <input
+              class="selectImg"
+              id="right-image-file"
+              type="file"
+              accept="image/jpg,image/jpeg,image/png"
+              contenteditable="false"
+              max="1"
+              v-on:change="rightDidInput()"
+            />
+            <span class="idcardTitle">身份证国徽面</span>
+            <img
+              class="idbgIcon"
+              id="rightImg_preview"
+              src="../img/idverify_bg1@2x.png"
+              alt=""
+            />
+          </form>
+        </div>
+      </div>
+      <div class="weui-cells totalCess">
+        <a
+          class="weui-cell weui-cell_access"
+          href="javascript:;"
+          @click="selectAddress"
+        >
+          <div class="weui-cell__bd"><p>常住地址</p></div>
+          <div class="weui-cell__ft" v-cloak>{{ workAddress }}</div>
+        </a>
+        <div class="weui-cell">
+          <div class="weui-cell__bd">
+            <input
+              class="weui-input"
+              type="text"
+              placeholder="请填写详细信息"
+              v-model="commpanyAddress"
+              v-on:input="writeCommpany()"
+            />
+          </div>
+        </div>
+
+        <a
+          class="weui-cell weui-cell_access"
+          href="javascript:;"
+          @click="selectEducation"
+        >
+          <div class="weui-cell__bd"><p>最高学历</p></div>
+          <div class="weui-cell__ft" v-cloak>{{ educationString }}</div>
+        </a>
+        <a class="weui-cell weui-cell_access" href="javascript:;">
+          <div class="weui-cell__bd"><p>婚姻状况</p></div>
+          <div class="weui-cell__ft" v-cloak @click="selectMarriage">
+            {{ marriageString }}
+          </div>
+        </a>
+      </div>
+      <div class="footer">
+        <a href="javascript:;" class="weui-btn weui-btn_primary" @click="next"
+          >下一步</a
+        >
+      </div>
+
+      <div id="loadingToast" style="display:none;">
+        <div class="weui-mask_transparent"></div>
+        <div class="weui-toast">
+          <i class="weui-loading weui-icon_toast"></i>
+          <p class="weui-toast__content">数据加载中</p>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script
+    type="text/javascript"
+    src="https://res.wx.qq.com/open/libs/weuijs/1.1.3/weui.min.js"
+  ></script>
+  <script src="../js/common/vue.js"></script>
+  <script src="../js/citys.js"></script>
+  <script src="../js/common/JanesiBridges.js"></script>
+  <script src="../js/common/zepto.min.js"></script>
+  <script src="../js/common/common.js"></script>
+  <script src="../js/common/lrz.all.bundle.js"></script>
+  <script src="../js/toast.js"></script>
+
+  <script>
+    new Vue({
+      el: "#root",
+      data: {
+        workAddress: "省市区", //单位地址
+        commpanyAddress: "", //单位详细地址
+        educationString: "请选择", //工资
+        marriageString: "请选择", //工作时间
+        leftIsUploading: false,
+        rightIsUploading: false,
+        onlyImgUnUploading: false, //所有资料都填完，但是图片没传完
+        leftImgUrl: "",
+        rightImgUrl: "",
+        leftUploadedUrl: "",
+        rightUploadedUrl: ""
+      },
+      created() {
+        this.getData();
+      },
+      mounted() {
+        // window.JanesiApi.reqUrl = "http://10.10.10.81:8091";
+      },
+      methods: {
+        getData() {
+          var cachedWA = localStorage.getItem("ivfp_workAddress");
+          var cachedCA = localStorage.getItem("ivfp_commpanyAddress");
+          var cachedES = localStorage.getItem("ivfp_educationString");
+          var cachedMS = localStorage.getItem("ivfp_marriageString");
+          this.workAddress = cachedWA ? cachedWA : "省市区";
+          this.commpanyAddress = cachedCA ? cachedCA : "";
+          this.marriageString = cachedMS ? cachedMS : "请选择";
+          this.educationString = cachedES ? cachedES : "请选择";
+        },
+
+        leftDidInput() {
+          console.log("left");
+          var fileInput = document.getElementById("left-image-file");
+          var img = document.getElementById("leftImg_preview");
+          var form = document.getElementById("uploadForm_left");
+          var that = this;
+          this.leftIsUploading = true;
+          this.imgChanged(fileInput, img, form, function(url) {
+            that.leftIsUploading = false;
+            if (url == 0) return;
+            that.leftUploadedUrl = url;
+            if (that.onlyImgUnUploading) {
+              that.goToOCR();
+            }
+          });
+        },
+        rightDidInput() {
+          var fileInput = document.getElementById("right-image-file");
+          var img = document.getElementById("rightImg_preview");
+          var form = document.getElementById("uploadForm_right");
+          var that = this;
+          this.rightIsUploading = true;
+          this.imgChanged(fileInput, img, form, function(url) {
+            that.rightIsUploading = false;
+            if (url == 0) return;
+            that.rightUploadedUrl = url;
+            if (that.onlyImgUnUploading) {
+              that.goToOCR();
+            }
+          });
+        },
+
+        imgChanged(fileInput, previewImg, form, result) {
+          leftImgUrl = fileInput.value;
+          if (leftImgUrl && leftImgUrl.length > 0) {
+            var reader = new FileReader();
+            reader.onload = (function(file) {
+              return function(e) {
+                previewImg.src = this.result;
+              };
+            })(fileInput.files[0]);
+            reader.readAsDataURL(fileInput.files[0]);
+          }
+          var file = fileInput.files[0];
+          console.log("size", file.size);
+          if (file.size / 100 > 2000) {
+            var that = this;
+            lrz(file)
+              .then(function(rst) {
+                console.log("after lrz", rst.file.size);
+                that.startUpLoad(rst.file, result);
+              })
+              .catch(function(err) {
+                weui.topTips("压缩失败");
+              });
+          } else {
+            this.startUpLoad(file, result);
+          }
+        },
+
+        startUpLoad(file, result) {
+          this.showToast(true);
+          var that = this;
+          var formData = new FormData();
+          formData.append("file", file);
+          $.ajax({
+            type: "post",
+            url: baseUrlHost + "/app/goldenbox/upload/ali_upload",
+            data: formData,
+            processData: false,
+            cache: false,
+            timeout:20000,
+            contentType: false,
+            success: function(data) {
+              that.showToast(false);
+              if (data.code == 0) {
+                var res = data.result[0];
+                result(res);
+              } else {
+                toast({
+                  message: data.msg,
+                  time: 2000
+                });
+                result(0);
+              }
+            },
+            error: function() {
+              that.showToast(false);
+              result(0);
+              toast({
+                message: "请求出错",
+                time: 2000
+              });
+            }
+          });
+        },
+        //单级选择器
+        //选择学历范围
+        selectEducation() {
+          var that = this;
+          weui.picker(
+            [
+              {
+                label: "小学"
+              },
+              {
+                label: "初中"
+              },
+              {
+                label: "高中"
+              },
+              {
+                label: "技校"
+              },
+              {
+                label: "中专"
+              },
+              {
+                label: "大专"
+              },
+              {
+                label: "本科"
+              },
+              {
+                label: "硕士及以上"
+              },
+              {
+                label: "其他"
+              }
+            ],
+            {
+              container: "body",
+              onChange: function(result) {
+                // console.log(result)
+              },
+              onConfirm: function(result) {
+                // console.log(result)
+                that.educationString = result[0].label;
+                localStorage.setItem(
+                  "ivfp_educationString",
+                  that.educationString
+                );
+              }
+            }
+          );
+        },
+
+        //时间选择器
+        //选择工作时间
+        selectMarriage() {
+          var that = this;
+          weui.picker(
+            [
+              {
+                label: "未婚"
+              },
+              {
+                label: "已婚"
+              },
+              {
+                label: "离异"
+              },
+              {
+                label: "丧偶"
+              }
+            ],
+            {
+              container: "body",
+              onChange: function(result) {
+                // console.log(result)
+              },
+              onConfirm: function(result) {
+                // console.log(result)
+                that.marriageString = result[0].label;
+                localStorage.setItem(
+                  "ivfp_marriageString",
+                  that.marriageString
+                );
+              }
+            }
+          );
+        },
+
+        selectAddress() {
+          var that = this;
+          var item = citys;
+          weui.picker(item, {
+            container: "body",
+            onChange: function(result) {
+              // console.log(result)
+            },
+            onConfirm: function(result) {
+              // console.log(result)
+              that.workAddress =
+                result[0].label + "-" + result[1].label + "-" + result[2].label;
+              localStorage.setItem("ivfp_workAddress", that.workAddress);
+            }
+          });
+        },
+
+        //填写公司名称
+        writeCommpany() {
+          localStorage.setItem("ivfp_commpanyAddress", this.commpanyAddress);
+        },
+        next() {
+          this.onlyImgUnUploading = false;
+          if (this.workAddress == "省市区") {
+            toast({
+              message: "请选择常住地址",
+              time: 2000
+            });
+          } else if (this.commpanyAddress == "") {
+            toast({
+              message: "请填写详细信息",
+              time: 2000
+            });
+          } else if (this.educationString == "请选择") {
+            toast({
+              message: "请选择学历",
+              time: 2000
+            });
+          } else if (this.marriageString == "请选择") {
+            toast({
+              message: "请选择婚姻状况",
+              time: 2000
+            });
+          } else {
+            if (
+              this.leftIsUploading == false &&
+              this.rightIsUploading == false
+            ) {
+              if (
+                this.leftUploadedUrl.length > 0 &&
+                this.rightUploadedUrl.length > 0
+              ) {
+                this.goToOCR();
+              } else {
+                toast({
+                  message: "请选择身份证照片",
+                  time: 2000
+                });
+              }
+            } else {
+              //两张都正在上传
+              if (
+                this.leftIsUploading == true &&
+                this.rightIsUploading == true
+              ) {
+                this.showToast(true);
+                this.onlyImgUnUploading = true;
+              } else {
+                //左边正在上传，右边传完
+                if (
+                  this.leftIsUploading == true &&
+                  this.rightUploadedUrl.length > 0
+                ) {
+                  this.showToast(true);
+                  this.onlyImgUnUploading = true;
+                  //右边正在上传，左边传完
+                } else if (
+                  this.rightIsUploading == true &&
+                  this.leftUploadedUrl.length > 0
+                ) {
+                  this.showToast(true);
+                  this.onlyImgUnUploading = true;
+                } else {
+                  toast({
+                    message: "请选择身份证照片",
+                    time: 2000
+                  });
+                }
+              }
+            }
+          }
+        },
+        goToOCR() {
+          var that = this;
+          that.showToast(true);
+          window.JanesiApi.sendApi(
+            "/app/goldenbox/user/ocr",
+            "post",
+            {
+              positive: that.leftUploadedUrl,
+              otherSide: that.rightUploadedUrl
+            },
+            function(e) {
+              that.onlyImgUnUploading = false;
+              that.showToast(false);
+              if (e.code == 0) {
+                localStorage.setItem("ivfp_cardInfo", JSON.stringify(e.result));
+                setTimeout(() => {
+                  window.JanesiBridge.callNative("open", {
+                    url: "loanMarket-app/templates/identityPreviewPage.html"
+                  });
+                }, 100);
+              } else {
+                toast({
+                  message: e.msg ? e.msg : "请求出错",
+                  time: 2000
+                });
+              }
+            }
+          );
+        },
+
+        showToast(isShow) {
+          var toast = document.getElementById("loadingToast");
+          if (isShow == true) {
+            toast.style.display = "inline";
+          } else {
+            toast.style.display = "none";
+          }
+        }
+      }
+    });
+  </script>
+</html>

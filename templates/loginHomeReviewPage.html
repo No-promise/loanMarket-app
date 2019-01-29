@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>首页</title>
+    <script src="../js/common/setDpr.js"></script>
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/loginHomeReviewPage.css" />
+    <link rel="stylesheet" href="../css/toast.css" />
+    <style type="text/css">
+      [v-cloak] {
+        display: none;
+      }
+
+      input {
+        border-width: 0px;
+      }
+    </style>
+   
+  </head>
+
+  <body>
+    <div id="root">
+      <div class="bgIndex">
+        <img class="topImg" src="../img/review_banner@2x.png" alt="" />
+        <div class="collection">
+          <div class="item">
+            <img class="fontTitle" src="../img/icon_yusan@2x.png" alt="" />
+            <span class="itemTitle">风控把关</span>
+          </div>
+          <div class="item">
+            <img class="fontTitle" src="../img/icon_shouzhang@2x.png" alt="" />
+            <span class="itemTitle">智能匹配</span>
+          </div>
+          <div class="item">
+            <img class="fontTitle" src="../img/icon_huojian@2x.png" alt="" />
+            <span class="itemTitle">专业快捷</span>
+          </div>
+        </div>
+        <div class="bg"></div>
+      </div>
+      <span class="string1">金码头快速信用评估</span>
+      <span class="string2">信用资质良好</span>
+      <div class="pingguBtn" @click="pingguAction()">
+        <span class="pingguBtnTitle">查看我的评估</span>
+      </div>
+    </div>
+    <script src="../js/common/zepto.min.js"></script>
+    <script src="../js/common/JanesiBridges.js"></script>
+    <script src="../js/common/vue.js"></script>
+    <script src="../js/toast.js"></script>
+
+    <script>
+      new Vue({
+        el: "#root",
+        data: {},
+        created: function() {},
+        mounted: function() {},
+        methods: {
+          pingguAction() {
+            window.JanesiBridge.callNative("open", {
+              url: "loanMarket-app/templates/reputation.html",
+              type: 2
+            });
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
+· ·

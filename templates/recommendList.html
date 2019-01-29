@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>推荐列表</title>
+    <script src="../js/common/setDpr.js"></script>
+    <link rel="stylesheet" href="../css/common/common.css">
+	<script src="../js/common/polyfill.min.js"></script>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+
+        body {
+            background: #fff;
+        }
+
+        .grayBlock {
+            height: 0.2rem;
+            background: #EFEFF4;
+        }
+        /* 头部 */
+        .header {
+            height: 3.7rem;
+        }
+        .iconRecommend {
+            width: 1.78rem;
+            height: 1.78rem;
+            margin-top: .46rem;
+            margin-bottom: .3rem;
+        }
+        .header p {
+            color: #888;
+            font-size: .28rem;
+            font-weight: 300;
+        }
+        /* 列表 */
+        .productList {
+            
+        }
+        .singleList {
+			padding: .2rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        .productIcon {
+            width: 1.2rem;
+            height: 1.2rem;
+			border-radius: .2rem;
+        }
+        .procuctRight p:nth-of-type(1) {
+            font-size: .36rem;
+            color: #353535;
+        }
+        .procuctRight p:nth-of-type(2) {
+            width: 3.5rem;
+            min-height: .3rem;
+            font-size: .28rem;
+            font-weight: 300;
+            color: #B2B2B2;
+            overflow: hidden;
+            text-overflow:ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp:2; 
+            -webkit-box-orient: vertical;
+        }
+        .withdrow {
+            width: 1.5rem;
+            height: 0.64rem;
+            line-height: .64rem;
+            border-radius: .1rem;
+            background: #09BB07;
+            color: #fff;
+            font-size: .28rem;
+            font-weight: 300;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root">
+        <div class="header wrapper flex_alcc padd_lr">
+            <img class="iconRecommend" src="../img/order/icon_recommend_list@2x.png">
+            <p>正在为您推荐多家金融机构，高概率多家同时</p>
+            <p>放宽如有疑问请联系客服</p>
+        </div>
+
+        <div class="grayBlock"></div>
+        <ul class="productList wrapper padd_lr" v-cloak >
+            <li class="singleList row flex_jcsb flex_alcc" v-for='(item,index) in list' v-cloak>
+                <img class="productIcon" v-bind:src="item.images">
+                <div class="procuctRight">
+                    <p v-cloak>{{item.name}}</p>
+                    <p v-cloak>{{item.summary}}</p>
+                </div>
+                <div class="withdrow text_center" @click='jumpOther(index)'>
+                    去提款
+                </div>
+            </li>
+        </ul>
+
+    </div>
+</body>
+<script src="../js/common/common.js"></script>
+<script src="../js/common/vue.js"></script>
+<script src="../js/common/zepto.min.js"></script>
+<script src="../js/common/JanesiBridges.js"></script>
+<script>
+    var app = new Vue({
+        el: '#root',
+        data: {
+			orderId:'',
+            list: []
+        },
+        created() {
+
+        },
+        mounted() {
+            // window.JanesiApi.reqUrl = 'http://www.afuturebank.com'
+            var that = this
+			window.JanesiBridge.callNativeWithCallBack('getWebCache',{
+					'storageLevel':'0',
+					 'key':"orderId"
+				},
+
+				function(res){
+					if(res){
+						that.orderId = res.orderId;
+						that.getList();
+					}
+			})
+        },
+        methods: {
+            // 获取关注列表
+            getList() {
+                var that = this
+                window.JanesiApi.sendApi('/app/goldenbox/ur_product/recom_products', 'post', {
+                    // userId: 'EIySXIPms/I=',
+					 // orderId:'7'
+                    orderId:that.orderId
+                }, function (res) {
+                    that.list = res.result
+                })
+            },
+            // 去提款
+            jumpOther(index){
+                var that = this;
+                console.log(that.list[index].link)
+                var jumpUrl = {
+                    url : that.list[index].link
+                }
+                window.JanesiBridge.callNative('open', jumpUrl);
+            }
+            
+
+
+
+
+        }
+    })
+</script>
+
+</html>

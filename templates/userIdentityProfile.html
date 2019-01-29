@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>身份信息</title>
+    <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/1.1.2/weui.min.css">
+    <link rel="stylesheet" href="../css/identifyVerifyPage.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <style>
+        .weui-cells{
+            margin-top: 0 !important;
+        }
+       
+    </style>
+
+</head>
+
+<body>
+    <div id="root">
+
+        <div class="weui-cells">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>姓名</p>
+                </div>
+                <div class="weui-cell__ft">{{result.realName}}</div>
+            </div>
+
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>身份证号码</p>
+                </div>
+                <div class="weui-cell__ft">{{result.idCardCode}}</div>
+            </div>
+
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>出生年月</p>
+                </div>
+                <div class="weui-cell__ft">{{result.birthday}}</div>
+            </div>
+
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>民族</p>
+                </div>
+                <div class="weui-cell__ft">{{result.race}}</div>
+            </div>
+
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>住址</p>
+                </div>
+                <div class="weui-cell__ft">{{result.address}}</div>
+            </div>
+
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>签发机关</p>
+                </div>
+                <div class="weui-cell__ft">{{result.issuing}}</div>
+            </div>
+
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>有效期</p>
+                </div>
+                <div class="weui-cell__ft">{{result.validTime}}</div>
+            </div>
+
+            <div class="sectionSpace"></div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>常住地址</p>
+                </div>
+                <div class="weui-cell__ft">{{result.normalCity+result.normalAdress}}</div>
+            </div>
+
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>最高学历</p>
+                </div>
+                <div class="weui-cell__ft">{{result.education}}</div>
+            </div>
+
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>婚姻状况</p>
+                </div>
+                <div class="weui-cell__ft">{{result.marriage}}</div>
+            </div>
+        </div>
+
+    </div>
+</body>
+<script type="text/javascript" src="https://res.wx.qq.com/open/libs/weuijs/1.1.3/weui.min.js"></script>
+<script src="../js/common/vue.js"></script>
+<script src="../js/common/JanesiBridges.js"></script>
+<script src="../js/common/zepto.min.js"></script>
+
+<script>
+    new Vue({
+        el: '#root',
+        data: {
+
+            result: {
+                address: "",
+                birthday: "",
+                idCardCode: "",
+                realName: "",
+                issuing: "",
+                race: "",
+                sex: "",
+                type: "",
+                validTime: "",
+                idCardFrontImage: "",
+                idCardBehindImage: "",
+
+                normalCity: '省市区',//单位地址
+                normalAdress: '',//单位详细地址
+                education: '请选择',
+                marriage: '请选择',
+            },
+        },
+        created() {
+            this.getData()
+        },
+        mounted() {
+
+        },
+        methods: {
+            getData() {
+
+                // window.JanesiApi.reqUrl = 'http://10.10.10.81:8091';
+                var that = this
+                window.JanesiApi.sendApi('/app/goldenbox/user/identity_info', 'post', {
+
+                }, function (e) {
+                    if (e.code == 0) {
+                        that.result = e.result;
+                    } else {
+                        weui.topTips(e.msg ? e.msg : "请求出错");
+                    }
+                })
+            },
+
+        }
+    })
+</script>
+
+</html>

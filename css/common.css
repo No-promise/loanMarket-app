@@ -1,0 +1,94 @@
+
+/*公用样式  */
+body,h1,h2,h3,h4,h5,h6,p,img,ul,li,input,dl,dt,dd,video,audio{
+	margin: 0;
+	padding: 0;
+}
+li{
+	list-style-type: none;
+}
+a{
+	text-decoration: none;
+	color: #333;
+}
+body {
+	background-color: #f4f4f4;
+	font-size: .24rem;
+	color: #333;
+	font-weight: normal;
+    overflow: hidden;
+	overflow-y: auto;   
+	-webkit-overflow-scrolling:touch; 
+    overflow-scrolling: touch;
+}
+
+::-webkit-scrollbar {
+	display: none;
+}
+/*选用样式  */
+.wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+}
+
+.wrap {
+    flex-wrap: wrap;
+}
+
+.text_center {
+    text-align: center;
+}
+
+.flex_alcc {
+    align-items: center;
+}
+
+.flex_jcc {
+    justify-content: center;
+}
+.flex_jcsa {
+    justify-content: space-around;
+}
+.flex_jcsb {
+    justify-content: space-between;
+}
+.flex_asc {
+    align-self: center
+}
+.flex_asfs {
+    align-self: flex-start
+}
+.po_r {
+    position: relative;
+}
+
+.po_a {
+    position: absolute;
+}
+.po_ac {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+.po_right {
+    right: 0;
+}
+
+.po_left {
+    left: 0;
+}
+
+.fl {
+    float: left;
+}
+
+.fr {
+    float: right;
+}

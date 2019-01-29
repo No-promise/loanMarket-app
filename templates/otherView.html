@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>其他信息</title>    
+    <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/1.1.2/weui.min.css">
+    <link rel="stylesheet" href="https://yun.janesi.com/janesi-loanMarket/css/index.css"> 
+    
+</head>
+<body>
+    <div id="root">
+        
+        <div class="weui-cells totalCess">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>常用邮箱号</p>
+                </div>
+                <div class="weui-cell__ft" >{{emailNum}}</div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>QQ账号</p>
+                </div>
+                <div class="weui-cell__ft" >{{QQNum}}</div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>微信账号</p>
+                </div>
+                <div class="weui-cell__ft" >{{wechartNum}}</div>
+            </div>
+    
+        </div>
+        
+    </div>
+</body>
+    <script type="text/javascript" src="https://res.wx.qq.com/open/libs/weuijs/1.1.3/weui.min.js"></script>
+    <script src="https://yun.janesi.com/janesi-loanMarket/js/common/vue.js"></script>
+    <script src="https://yun.janesi.com/janesi-loanMarket/js/common/zepto.min.js"></script>
+    <script src="https://yun.janesi.com/janesi-loanMarket/js/common/JanesiBridges.js"></script>
+    <script>
+        new Vue({
+            el:'#root',
+            data:{
+                dataFlag4:'1',
+                emailNum:'',
+                QQNum:'',
+                wechartNum:'',
+            },
+            created(){
+                this.getData();
+            },
+            mounted(){
+
+            },
+            methods:{
+                getData(){
+                    var that=this;
+                    var reqApi = '/app/goldenbox/user/info';
+                    window.JanesiApi.sendApi(reqApi, 'post', {
+
+                    }, function (res) {
+                        console.log(res)
+                        if(res.result){
+                            that.emailNum=res.result.email;
+                            that.QQNum=res.result.qqNum;
+                            that.wechartNum=res.result.wxNum;
+                        }
+                    })
+                    
+                    
+                },
+                
+                
+            }
+        })
+    </script>
+</html>

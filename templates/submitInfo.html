@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>提交资料</title>
+    <script src="../js/common/setDpr.js"></script>
+    <link rel="stylesheet" href="../css/common/common.css">
+	<script src="../js/common/polyfill.min.js"></script>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+        body {
+            background: #fff;
+        }
+        .submitBanner {
+            padding-top: .4rem;
+            box-sizing: border-box;
+            height: 2.74rem;
+            border-bottom: .5px solid #eee;
+        }
+        .submitBanner img {
+            width: 1.14rem;
+            height: 1.14rem;
+            margin-bottom: .3rem;
+        }
+        .submitBanner p {
+            font-size: .28rem;
+            font-weight: 300;
+            color: #888;
+        }
+        /* 流程 */
+        .processList {
+            padding-top: .54rem;
+            margin-left: 2rem;
+        }
+        .fontProcess p:nth-of-type(1).finish {
+            color: #09BB07;
+        }
+        .process img {
+            width: 100%;
+            display: block;
+        }
+        .finishIcon {
+            width: 0.48rem;
+            height: 0.44rem;
+            position: relative;
+        }
+        .finishIcon.finished::after {
+            background: #09BB07;
+        }
+        .finishIcon::after {
+            content: '';
+            position: absolute;
+            top: .42rem;
+            left: .24rem;
+            width: 1px;
+            height: 1.3rem;
+            background: #D8D8D8;
+        }
+        .processList li:last-child .finishIcon::after {
+            display: none;
+        }
+        .fontProcess {
+            margin-left: .18rem;
+            margin-bottom: .74rem;
+        }
+        .fontProcess p:nth-of-type(1) {
+            color: #353535;
+            font-size: .36rem;
+            margin-bottom: .14rem;
+        }
+        .fontProcess p:nth-of-type(2) {
+            color: #888;
+            font-size: .24rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root">
+        <div class="submitBanner wrapper flex_alcc ">
+            <img src="../img/order/submit_information@2x.png">
+            <p>正在提交资料，请耐心等待</p>
+        </div>
+        <!-- 流程 -->
+        <ul class="processList wrapper ">
+            <li class="process row " >
+                <div class="finishIcon" v-bind:class="{finished:oneFinish}">
+                    <img  v-bind:src="oneIcon">
+                </div>
+                <div class="fontProcess" >
+                    <p v-bind:class="{finish:oneFinish}">身份信息</p>
+                    <p>身份信息提交成功！</p>
+                </div>
+            </li>
+            <li class="process row ">
+                <div class="finishIcon" v-bind:class="{finished:twoFinish}">
+                    <img  v-bind:src="twoIcon">
+                </div>
+                <div class="fontProcess">
+                    <p v-bind:class="{finish:twoFinish}">工作信息</p>
+                    <p>工作信息提交成功！</p>
+                </div>
+            </li>
+            <li class="process row ">
+                <div class="finishIcon" v-bind:class="{finished:threeFinish}">
+                    <img  v-bind:src="threeIcon">
+                </div>
+                <div class="fontProcess">
+                    <p v-bind:class="{finish:threeFinish}">常用联系人信息</p>
+                    <p>常用联系人信息提交成功！</p>
+                </div>
+            </li>
+            <li class="process row ">
+                <div class="finishIcon" v-bind:class="{finished:foreFinish}">
+                    <img  v-bind:src="foreIcon">
+                </div>
+                <div class="fontProcess">
+                    <p v-bind:class="{finish:foreFinish}">信用认证</p>
+                    <p>信用信息提交成功！</p>
+                </div>
+            </li>
+            <li class="process row ">
+                <div class="finishIcon" v-bind:class="{finished:fiveFinish}">
+                    <img  v-bind:src="fiveIcon">
+                </div>
+                <div class="fontProcess">
+                    <p v-bind:class="{finish:fiveFinish}">其他信息</p>
+                    <p>其他信息提交成功！</p>
+                </div>
+            </li>
+            <li class="process row ">
+                <div class="finishIcon" v-bind:class="{finished:sixFinish}">
+                    <img  v-bind:src="sixIcon">
+                </div>
+                <div class="fontProcess">
+                    <p v-bind:class="{finish:sixFinish}">信息认证</p>
+                    <p>正在验证信息</p>
+                </div>
+            </li>
+
+        </ul>
+
+    </div>
+</body>
+<script src="../js/common/common.js"></script>
+<script src="../js/common/vue.js"></script>
+<script src="../js/common/zepto.min.js"></script>
+<script src="../js/common/JanesiBridges.js"></script>
+<script>
+    var app = new Vue({
+        el: '#root',
+        data: {
+            oneFinish:false,
+            twoFinish:false,
+            threeFinish:false,
+            foreFinish:false,
+            fiveFinish:false,
+            sixFinish:false,
+
+            oneIcon:  '../img/order/unfinishIcon.png',
+            twoIcon:  '../img/order/unfinishIcon.png',
+            threeIcon:  '../img/order/unfinishIcon.png',
+            foreIcon:  '../img/order/unfinishIcon.png',
+            fiveIcon:  '../img/order/unfinishIcon.png',
+            sixIcon:  '../img/order/unfinishIcon.png'
+
+        },
+        created() {
+
+        },
+        mounted() {
+            var that = this
+            that.changeStyle()
+        },
+        methods: {
+            changeStyle(){
+                var that = this;
+                setTimeout(() => {
+                    that.oneIcon =   '../img/order/finishIcon.png'
+                    that.oneFinish = true
+                }, 800);
+                
+                setTimeout(() => {
+                    that.twoIcon =   '../img/order/finishIcon.png'
+                    that.twoFinish = true
+                }, 1500);
+                setTimeout(() => {
+                    that.threeIcon =   '../img/order/finishIcon.png'
+                    that.threeFinish = true
+                }, 3800);
+                setTimeout(() => {
+                    that.foreIcon =   '../img/order/finishIcon.png'
+                    that.foreFinish = true
+                }, 5500);
+                setTimeout(() => {
+                    that.fiveIcon =   '../img/order/finishIcon.png'
+                    that.fiveFinish = true
+                }, 7000);
+                setTimeout(() => {
+                    that.sixIcon =   '../img/order/finishIcon.png'
+                    that.sixFinish = true;
+                    var jumpUrl = baseUrlHost + '/creditEvaluate.html';
+                    window.JanesiBridge.callNative('open', {
+                    // 'url': 'loanMarket-app/templates/creditEvaluate.html'
+                    // 'url':'https://yun.janesi.com/janesi-loanMarket/templates/creditEvaluate.html',
+					'url':jumpUrl
+                    
+                });
+
+                }, 8000);
+
+            }
+        }
+    })
+</script>
+
+</html>

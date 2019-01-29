@@ -1,0 +1,19 @@
+html,body{
+    width:100%;
+    height:100%;
+}
+[v-cloak] {
+     display: none;
+}
+#root{
+    width:100%;
+    height:100%;
+    background-color: #EFEFF4;
+}
+.totalCess{
+    margin-top:0;
+}
+.footer{
+    padding:0 15px;
+    margin-top:20px;
+}

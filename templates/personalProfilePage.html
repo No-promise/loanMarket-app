@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,user-scalable=0"
+    />
+    <title>个人资料</title>
+    <link
+      rel="stylesheet"
+      href="https://res.wx.qq.com/open/libs/weui/1.1.2/weui.min.css"
+    />
+    <link rel="stylesheet" href="../css/common.css" />
+  </head>
+
+  <body>
+    <div id="root">
+      <div class="weui-cells">
+        <div class="weui-cell" @click="scanIdentity">
+          <div class="weui-cell__bd"><p>身份信息</p></div>
+          <div class="weui-cell__ft" @click="scanIdentity">查看</div>
+        </div>
+
+        <div class="weui-cell" @click="scanJob">
+          <div class="weui-cell__bd"><p>工作信息</p></div>
+          <div class="weui-cell__ft" >查看</div>
+        </div>
+
+        <div class="weui-cell" @click="scanLinkman">
+          <div class="weui-cell__bd"><p>常用联系人</p></div>
+          <div class="weui-cell__ft" >查看</div>
+        </div>
+
+        <div class="weui-cell" @click="scanBank">
+          <div class="weui-cell__bd"><p>收款银行卡</p></div>
+          <div class="weui-cell__ft" >查看</div>
+        </div>
+
+        <div class="weui-cell" @click="scanOther">
+          <div class="weui-cell__bd"><p>其他信息</p></div>
+          <div class="weui-cell__ft" >查看</div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script
+    type="text/javascript"
+    src="https://res.wx.qq.com/open/libs/weuijs/1.1.3/weui.min.js"
+  ></script>
+  <script src="../js/common/vue.js"></script>
+  <script src="../js/common/JanesiBridges.js"></script>
+
+  <script>
+    new Vue({
+      el: "#root",
+      data: {},
+      created() {},
+      mounted() {},
+      methods: {
+        scanIdentity() {
+          window.JanesiBridge.callNative("open", {
+            url: "loanMarket-app/templates/userIdentityProfile.html"
+          });
+        },
+        scanJob() {
+          window.JanesiBridge.callNative("open", {
+            url: "loanMarket-app/templates/workView.html"
+          });
+        },
+        scanLinkman() {
+          window.JanesiBridge.callNative("open", {
+            url: "loanMarket-app/templates/contactView.html"
+          });
+        },
+        scanBank() {
+          window.JanesiBridge.callNative("open", {
+            url: "loanMarket-app/templates/bankView.html"
+          });
+        },
+        scanOther() {
+          window.JanesiBridge.callNative("open", {
+            url: "loanMarket-app/templates/otherView.html"
+          });
+        }
+      }
+    });
+  </script>
+</html>

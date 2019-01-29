@@ -1,0 +1,94 @@
+html,
+body {
+  background-color: #ffffff;
+  width: 100%;
+  height: 100%;
+}
+#root {
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+  font-family: "PingFang SC", "Microsoft YaHei", "SimSun", "Arial", sans-serif;
+  position: relative;
+  text-align: center;
+}
+.bgIndex {
+  padding-top: 1.08rem;
+  box-sizing: border-box;
+  text-align: center;
+}
+.topImg {
+  width: 6.86rem;
+}
+
+.collection {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 0.39rem;
+}
+.item {
+  text-align: center;
+}
+.itemTitle {
+  font-size: 12px;
+  font-family: PingFangSC-Regular;
+  color: #6d6d6d;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+.fontTitle {
+  width: 0.74rem;
+  height: 0.74rem;
+  background-size: 0.74rem 0.74rem;
+}
+.bg {
+  width: 100%;
+  margin-top: 0.6rem;
+  height: 10px;
+  background-color: #f5f5f5;
+}
+.bgTitle {
+  font-size: 0.28rem;
+  font-family: PingFangSC-Regular;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 2.5rem;
+}
+
+.string1 {
+  margin-top: 0.8rem;
+  font-size: 0.48rem;
+  color: #353535;
+  line-height: 0.66rem;
+  font-family: PingFangSC-Medium;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.string2 {
+  margin-top: 0.1rem;
+  font-size: 0.28rem;
+  color: #999999;
+  line-height: 0.4rem;
+  font-family: PingFangSC-Regular;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.pingguBtn {
+  width: 5.12rem;
+  height: 0.8rem;
+  background-color: #09bb07;
+  border-radius: 5px;
+  text-align: center;
+  margin: 0.8rem auto 0 auto;
+}
+
+.pingguBtnTitle {
+  font-size: 16px;
+  font-family: PingFangSC-Regular;
+  color: rgba(255, 255, 255, 1);
+  line-height: 0.8rem;
+}

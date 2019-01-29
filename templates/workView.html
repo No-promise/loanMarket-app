@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>工作信息</title>    
+    <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/1.1.2/weui.min.css">
+    <link rel="stylesheet" href="../css/index.css"> 
+    
+</head>
+<body>
+    <div id="root">
+        
+        <div class="weui-cells totalCess">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>职业类型</p>
+                </div>
+                <div class="weui-cell__ft" >{{workType}}</div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p >{{commpanyName}}</p>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>单位地址</p>
+                </div>
+                <div class="weui-cell__ft" >{{workAddress}}</div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>{{commpanyAddress}}</p>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>单位电话</p>
+                </div>
+                <div class="weui-cell__ft" >{{compangTel}}</div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>月收入</p>
+                </div>
+                <div class="weui-cell__ft" >{{worksalary}}</div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>入职时间</p>
+                </div>
+                <div class="weui-cell__ft" >{{workTime}}</div>
+            </div>
+        </div>
+        
+    </div>
+</body>
+    <script type="text/javascript" src="https://res.wx.qq.com/open/libs/weuijs/1.1.3/weui.min.js"></script>
+    <script src="../js/common/vue.js"></script>
+    <script src="../js/common/zepto.min.js"></script>
+    <script src="../js/common/JanesiBridges.js"></script> 
+    <script>
+        new Vue({
+            el:'#root',
+            data:{
+                dataFlag:'1',
+                workType:'请选择',//职业类型
+                commpanyName:'无',//单位名称
+                workAddress:'省市区',//
+                commpanyAddress:'无',
+                compangTel:'133546',
+                worksalary:'请选择',//工资
+                workTime:'请选择'
+            },
+            created(){
+            },
+            mounted(){
+//              window.JanesiApi.reqUrl = 'http://10.10.10.81:8091';//声俊
+                this.getData();
+                 
+            },
+            methods:{
+                //获取个人信息的数据
+                getData(){
+                    var that=this;
+                    var reqApi = '/app/goldenbox/user/job_info';
+                    window.JanesiApi.sendApi(reqApi, 'post', {
+                        // userId:'Fgv6ZcZdR74='
+                    }, function (res) {
+                        console.log(res)
+                        console.log(res.result.jobType)
+                        that.workType=res.result.jobType;
+                        that.commpanyName=res.result.companyName;
+                        that.workAddress=res.result.companyCity;
+                        that.commpanyAddress=res.result.companyAddress;
+                        that.compangTel=res.result.companyPhone;
+                        that.worksalary=res.result.monthlyIncome;
+                        that.workTime=res.result.entryTime;
+                        
+                        
+                    })
+                },
+                
+            }
+        })
+    </script>
+</html>

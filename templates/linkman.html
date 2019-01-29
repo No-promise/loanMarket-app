@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>联系人信息</title>    
+    <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/1.1.2/weui.min.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <style>
+        
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div class="weui-progress">
+            <div class="weui-progress__bar">
+                <div class="weui-progress__inner-bar js_progress" style="width: 40%;"></div>
+            </div>
+        </div>
+        <div class="weui-cells totalCess">
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">直系联系人</label></div>
+            </div>
+            <a class="weui-cell weui-cell_access" href="javascript:;" @click="selectContant">
+                <div class="weui-cell__bd">
+                    <p>关系</p>
+                </div>
+                <div class="weui-cell__ft"  v-cloak>{{contactType}}</div>
+            </a>
+ 
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">电话</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="number" pattern="[0-9]*"  v-model="familyTel" v-on:input="writefamilyTel">
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">姓名</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="text"  v-model="familyName" v-on:input="writefamilyName">
+                </div>
+            </div>
+        </div>
+
+        <div class="weui-cells SecondCess">
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">重要联系人</label></div>
+            </div>
+            <a class="weui-cell weui-cell_access" href="javascript:;"  @click="selectImportContant">
+                <div class="weui-cell__bd">
+                    <p>关系</p>
+                </div>
+                <div class="weui-cell__ft"  v-cloak>{{importContantType}}</div>
+            </a>
+ 
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">电话</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="number" pattern="[0-9]*"  v-model="importContantTel" v-on:input="writeContantTel">
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">姓名</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="text"  v-model="importContantName" v-on:input="writeContantName">
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <a href="javascript:;" class="weui-btn weui-btn_primary" @click="next" >下一步</a>   
+        </div>
+    </div>
+</body>
+    <script type="text/javascript" src="https://res.wx.qq.com/open/libs/weuijs/1.1.3/weui.min.js"></script>
+    <script src="../js/common/vue.js"></script>
+    <script src="../js/citys.js"></script>
+    <script src="../js/common/JanesiBridges.js"></script>
+    <script>
+        new Vue({
+            el:'#root',
+            data:{
+                contactType:'请选择',//类型
+                familyTel:'',
+                familyName:'',
+                importContantType:'请选择',
+                importContantTel:'',
+                importContantName:'',
+               
+
+            },
+            created(){
+                this.getData()
+            },
+            mounted(){
+                
+            },
+            methods:{
+                getData(){
+                    console.log(localStorage)
+                    if(localStorage.getItem("contactType")){
+                        this.contactType=localStorage.getItem("contactType");
+                        this.familyTel=localStorage.getItem("familyTel");
+                        this.familyName=localStorage.getItem("familyName");
+                        this.importContantType=localStorage.getItem("importContantType");
+                        this.importContantTel=localStorage.getItem("importContantTel");
+                        this.importContantName=localStorage.getItem("importContantName");
+                    }
+                },
+                
+
+                //单级选择器
+                selectContant(){
+                    var that=this;
+                    weui.picker([
+                    {
+                        label: '配偶',
+                    },
+                    {
+                        label: '父母',
+                    },
+                    {
+                        label: '子女',
+                    },
+                    {
+                        label: '其他',
+                    },
+                    ], {
+                    container: 'body',
+                    onChange: function (result) {
+                        console.log(result)
+                    },
+                    onConfirm: function (result) {
+                        console.log(result)
+                        that.contactType=result[0].label;
+                    	localStorage.setItem("contactType",that.contactType)
+                        
+                    },
+                    });
+                },
+                selectImportContant(){
+                    var that=this;
+                    weui.picker([
+                    {
+                        label: '好友',
+                    },
+                    {
+                        label: '同事',
+                    },
+                    {
+                        label: '其他',
+                    },
+                    ], {
+                    container: 'body',
+                    onChange: function (result) {
+                        console.log(result)
+                    },
+                    onConfirm: function (result) {
+                        console.log(result)
+                        that.importContantType=result[0].label;
+                    	localStorage.setItem("importContantType",that.importContantType)
+                        
+                    },
+                    });
+                },
+                writefamilyTel(){
+                    localStorage.setItem("familyTel",this.familyTel)
+                },
+                writefamilyName(){
+                    localStorage.setItem("familyName",this.familyName)
+                	
+                },
+                writeContantTel(){
+                    localStorage.setItem("importContantTel",this.importContantTel)
+                	
+                },
+                writeContantName(){
+                    localStorage.setItem("importContantName",this.importContantName)
+                	
+                },
+                next(){
+                    if(this.contactType=='请选择'){
+                        weui.topTips('请选择直系关系');
+                    }else if(this.familyTel==''){
+                        weui.topTips('请填写直系电话');                        
+                    }else if(this.familyName==''){
+                        weui.topTips('请填写直系姓名');                                                
+                    }else if(this.importContantType=='请选择'){
+                        weui.topTips('请选择关系');                                                
+                    }else if(this.importContantTel==''){
+                        weui.topTips('请填写电话');                        
+                    }else if(this.importContantName==''){
+                        weui.topTips('请填写姓名');                        
+                    }else if(this.importContantTel.length>11){
+                        weui.topTips('请填写正确的电话号码');                        
+                    }else if(this.familyTel.length>11){
+                        weui.topTips('请填写正确的电话号码');                        
+                    }else{
+                        // location.href="contactPreview.html"
+                        // window.location.href="/app/goldenbox/home/contactPreview"
+                        window.JanesiBridge.callNative('open', {
+                        'url': 'loanMarket-app/templates/contactPreview.html'
+                        });
+
+                    } 
+                }
+            }
+        })
+    </script>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>工作信息</title>    
+    <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/1.1.2/weui.min.css">
+    <link rel="stylesheet" href="../css/index.css">  
+</head>
+<body>
+    <div id="root">
+        <div class="weui-progress">
+            <div class="weui-progress__bar">
+                <div class="weui-progress__inner-bar js_progress" style="width: 20%;"></div>
+            </div>
+        </div>
+        <div class="weui-cells totalCess">
+            <a class="weui-cell weui-cell_access" href="javascript:;" @click="selectWork">
+                <div class="weui-cell__bd">
+                    <p>职业类型</p>
+                </div>
+                <div class="weui-cell__ft"  v-cloak>{{workType}}</div>
+            </a>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="text" placeholder="请填写单位名称" v-model="commpanyName" v-on:input="writeCommpany">
+                </div>
+            </div>
+           <a class="weui-cell weui-cell_access" href="javascript:;" @click="selectAddress">
+                <div class="weui-cell__bd">
+                    <p>单位地址</p>
+                </div>
+                <div class="weui-cell__ft"  v-cloak>{{workAddress}}</div>
+            </a>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="text" placeholder="请填写单位详细地址" v-model="commpanyAddress" v-on:input="writeAddress">
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">单位电话</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="number" pattern="[0-9]*" placeholder="(可选填)" v-model="compangTel" v-on:input="writecompangTel"> 
+                </div>
+            </div>
+            <a class="weui-cell weui-cell_access" href="javascript:;" @click="selectSalary">
+                <div class="weui-cell__bd">
+                    <p>月收入</p>
+                </div>
+                <div class="weui-cell__ft"  v-cloak>{{worksalary}}</div>
+            </a>
+            <a class="weui-cell weui-cell_access" href="javascript:;" @click="selectTime">
+                <div class="weui-cell__bd">
+                    <p>入职时间</p>
+                </div>
+                <div class="weui-cell__ft"  v-cloak>{{workTime}}</div>
+            </a>
+        </div>
+        <div class="footer">
+            <a href="javascript:;" class="weui-btn weui-btn_primary" @click="next" >下一步</a>   
+        </div>
+    </div>
+</body>
+    <script type="text/javascript" src="https://res.wx.qq.com/open/libs/weuijs/1.1.3/weui.min.js"></script>
+     <script src="../js/common/vue.js"></script> 
+     <script src="../js/common/zepto.min.js"></script>
+     <script src="../js/common/JanesiBridges.js"></script> 
+     <script src="../js/citys.js"></script>     
+    <script>
+        new Vue({
+            el:'#root',
+            data:{
+                workType:'请选择',//职业类型
+                commpanyName:'',//单位名称
+                workAddress:'省市区',//单位地址
+                commpanyAddress:'',//单位详细地址
+                compangTel:'',//单位联系电话
+                worksalary:'请选择',//工资
+                workTime:'请选择'//工作时间
+            },
+            created(){
+                this.getData()
+            },
+            mounted(){
+                //  window.JanesiApi.reqUrl = 'http://10.10.10.81:8091';//声俊
+            },
+            methods:{
+                getData(){
+                    console.log(localStorage)
+                    if(localStorage.getItem("workType")){
+                        this.workType=localStorage.getItem("workType");
+                        this.commpanyName=localStorage.getItem("commpanyName");
+                        this.workAddress=localStorage.getItem("workAddress");
+                        this.commpanyAddress=localStorage.getItem("commpanyAddress");
+                        this.compangTel=localStorage.getItem("compangTel");
+                        this.worksalary=localStorage.getItem("worksalary");
+                        this.workTime=localStorage.getItem("workTime");   
+                    }
+                },
+                selectWork(){
+                    var that=this;
+                    // 级联picker 
+                    //选择职业类型
+                    weui.picker([
+                    {
+                        label: '企业单位',
+                        children: [
+                            {
+                                label: '事业单位公务员',
+                            },
+                            {
+                                label: '私营企业一般员工',
+                            },
+                            {
+                                label: '外企一般员工',
+                            },
+                            {
+                                label: '公司管理层',
+                            },
+                            {
+                                label: '工人',
+                            },
+                            {
+                                label: '医生',
+                            },
+                            {
+                                label: '教师',
+                            }
+                        ]
+                    },
+                    {
+                        label: '个体',
+                        children: [
+                            {
+                                label: '个体工商户',
+                            },
+                            {
+                                label: '流动商户',
+                            },
+                            {
+                                label: '农民',
+                            }
+                        ]
+                    },
+                    {
+                        label: '自由职业',
+                        children: [
+                            {
+                                label: '证券投资',
+                            },
+                            {
+                                label: '钟点工',
+                            },
+                            {
+                                label: '临时工',
+                            },
+                            {
+                                label: '其他',
+                            }
+                        ]
+                    }
+                    ], {
+                    container: 'body',
+                    onChange: function (result) {
+                        // console.log(result)
+                    },
+                    onConfirm: function (result) {
+                        that.workType=result[0].label+'-'+result[1].label;
+                        localStorage.setItem("workType",that.workType)
+                    },
+                    });
+
+                },
+
+                //单级选择器
+                //选择工资范围
+                selectSalary(){
+                    var that=this;
+                    weui.picker([
+                    {
+                        label: '2000元以下',
+                    },
+                    {
+                        label: '2001-3000元',
+                    },
+                    {
+                        label: '3001-5000元',
+                    },
+                    {
+                        label: '5001-7000元',
+                    },
+                    {
+                        label: '7001-9000元',
+                    },
+                    {
+                        label: '9001-11000元',
+                    },
+                    {
+                        label: '11000-14000元',
+                    },
+                    {
+                        label: '14000-16000元',
+                    },
+                    {
+                        label: '16000元以上',
+                    }
+                    ], {
+                    container: 'body',
+                    onChange: function (result) {
+                        console.log(result)
+                    },
+                    onConfirm: function (result) {
+                        console.log(result)
+                        that.worksalary=result[0].label;
+                    	localStorage.setItem("worksalary",that.worksalary)
+                        
+                    },
+                    });
+                },
+
+                //时间选择器
+                //选择工作时间
+                selectTime(){
+                    var that=this;
+                    weui.datePicker({
+                    start: 1990,
+                    end: new Date(),
+                    defaultValue: [2018, 11, 1],
+                    onChange: function(result){
+                        // console.log(result);
+                    },
+                    onConfirm: function(result){
+                        // console.log(result);
+                        var year=result[0].label.replace("年","");
+                        var month=result[1].label.replace("月","");
+                        var day=result[2].label.replace("日","");
+                        that.workTime=year+'-'+month+'-'+day;
+                    	localStorage.setItem("workTime",that.workTime)
+                        
+                    },      
+                    });
+                },
+
+                selectAddress(){
+                    var that=this;
+                    var item=citys;
+                    weui.picker(item,{
+                    container: 'body',
+                    onChange: function (result) {
+                        // console.log(result)
+                    },
+                    onConfirm: function (result) {
+//                      console.log('address1',result)
+                        that.workAddress=result[0].label+'-'+result[1].label+'-'+result[2].label;
+                        localStorage.setItem("workAddress",that.workAddress)
+                        
+                    },
+                    });
+                },
+
+
+                //填写公司名称
+                writeCommpany(value){
+                    localStorage.setItem("commpanyName",this.commpanyName)
+                },
+                //填写公司地址
+                writeAddress(){
+                    localStorage.setItem("commpanyAddress",this.commpanyAddress)
+                },
+                writecompangTel(){
+                    localStorage.setItem("compangTel",this.compangTel)
+                	
+                },
+                next(){
+
+                    if(this.workType=='请选择'){
+                        weui.topTips('请选择职业类型');
+                    }else if(this.commpanyName==''){
+                        weui.topTips('请填写单位名称');                        
+                    }else if(this.workAddress=="省市区"){
+                        weui.topTips('请选择单位地址');                        
+                    }else if(this.commpanyAddress==''){
+                        weui.topTips('请填写单位详细地址');                                                
+                    }else if(this.worksalary=='请选择'){
+                        weui.topTips('请选择月收入');                                                
+                    }else if(this.workTime=='请选择'){
+                        weui.topTips('请选择入职时间');                                                                        
+                    }else{
+                        // location.href="/app/goldenbox/home/workPreview"
+                        window.JanesiBridge.callNative('open', {
+                        'url': 'loanMarket-app/templates/workPreview.html'
+                        });
+                    } 
+                }
+            }
+        })
+    </script>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>信誉资质</title>
+    <script src="../js/common/setDpr.js"></script>
+    <link rel="stylesheet" href="../css/common/common.css">
+	<script src="../js/common/polyfill.min.js"></script>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+        
+        .banner {
+            width: 100%;
+            height: 4rem;
+            background-image: url('../img/order/reputionBanner.png');
+            background-size: cover;
+            margin-bottom: .3rem;
+        }
+
+        p {
+            font-size: .32rem;
+            color: #333;
+        }
+
+        .score {
+            margin-top: .9rem;
+            color: #fff;
+            font-size: .8rem;
+        }
+
+        .bannerTip {
+            margin-top: .12rem;
+            margin-bottom: .72rem;
+        }
+
+        /* 协议列表 */
+        .protocolList li {
+            height: 0.8rem;
+            line-height: .8rem;
+            padding: 0 .3rem;
+            background: #fff;
+        }
+
+        .protocolList li {
+            position: relative;
+        }
+
+        .protocolList li::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            width: 96%;
+            height: 1px;
+            background: #eee;
+        }
+
+        .protocolList li p {
+            position: relative;
+        }
+
+        .protocolList li p::after {
+            content: "";
+            display: inline-block;
+            height: .12rem;
+            width: .12rem;
+            border-width: 2px 2px 0 0;
+            border-color: #C8C8CD;
+            border-style: solid;
+            transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
+            position: absolute;
+            top: 50%;
+            right: 0;
+            margin-top: -4px;
+        }
+        .applyMoney {
+            width: 100%;
+        }
+        .applyButton {
+            width: 6rem;
+            height: 0.88rem;
+            background: #09BB07;
+            line-height: .88rem;
+            color: #fff;
+            font-size: .36rem;
+            text-align: center;
+            border-radius: .1rem;
+            margin-top: .8rem;
+        }
+    </style>
+    
+</head>
+
+<body>
+    <div id="root">
+        <div class="container" >
+            <div class="banner wrapper flex_alcc ">
+                    <p class="score" id="money1" >0</p>
+                <p class="bannerTip whiteColor">综合评分</p>
+                <p class="isGood whiteColor">您的信誉资质良好</p>
+            </div>
+            <ul class="protocolList ">
+                <li @click="cheatReport()">
+                    <p>反欺诈评估报告</p>
+                </li>
+                <li @click="limitReport()">
+                    <p>额度评估报告</p>
+                </li>
+                <li @click="creditReport()">
+                    <p>征信查询授权协议</p>
+                </li>
+                <li @click="cheatProtocol()">
+                    <p>反欺诈评估服务协议</p>
+                </li>
+                <li @click="limitProtocol()">
+                    <p>额度评估服务协议</p>
+                </li>
+            </ul>
+            <!-- <div class="applyMoney row flex_jcc">
+                <div class="applyButton" @click="nowApply()">
+                        立即申请借款
+                </div>
+            </div> -->
+        </div>
+
+        
+
+
+    </div>
+</body>
+<script src="../js/common/vue.js"></script>
+<script src="../js/common/zepto.min.js"></script>
+<script src="../js/common/JanesiBridges.js"></script>
+<script src="../js/countUp.js"></script>
+<script>
+    var app = new Vue({
+        el: '#root',
+        data: {
+            scoreNums:'788',
+            infoList:{
+                socre:'0',
+                antiFraud:'',
+                antiFraudArgue:'',
+                letterCredit:'',
+                quota:'',
+                quotaArgue:''
+            }
+
+        },
+        created() {
+
+        },
+        mounted() {
+            var that = this
+            that.getList();
+        },
+        methods: {
+            // 弹框金币动画
+            runNum(start, end) {
+                var options = {
+                    useEasing: true,
+                    useGrouping: true,
+                    separator: ',',
+                    decimal: '.'
+                };
+                var money1 = new CountUp('money1', start, end, 0, 2, options);
+                if (!money1.error) {
+                    money1.start();
+                } else {
+                    console.error(money1.error);
+                }
+
+            },
+            // 获取关注列表
+            getList() {
+                var that = this
+                window.JanesiApi.sendApi('/app/goldenbox/user/credit_info', 'post', {
+                    // userId: '8S9PLqck8VA='
+                }, function (res) {
+                    console.log(res)
+                    that.infoList = res.result;
+                    console.log('infoList',that.infoList);
+                    that.runNum( 0, res.result.socre)
+                })
+            },
+            // 反欺诈评估报告
+            cheatReport() {
+                var that = this
+                window.JanesiBridge.callNative('open', {
+                    'url': that.infoList.antiFraud
+                });
+            },
+            // 额度评估报告
+            limitReport() {
+                var that = this
+                window.JanesiBridge.callNative('open', {
+                    'url': that.infoList.quota
+                });
+
+            },
+            // 征信查询授权协议
+            creditReport() {
+                var that = this
+                window.JanesiBridge.callNative('open', {
+                    'url': that.infoList.letterCredit
+                });
+
+            },
+            // 反欺诈评估服务协议
+            cheatProtocol() {
+                var that = this
+                window.JanesiBridge.callNative('open', {
+                    'url': that.infoList.antiFraudArgue
+                });
+
+            },
+            // 额度评估服务协议
+            limitProtocol() {
+                var that = this
+                window.JanesiBridge.callNative('open', {
+                    'url': that.infoList.quotaArgue
+                });
+
+            },
+            // 立即申请
+            nowApply(){
+                window.JanesiBridge.callNative('open', {
+                    'url': 'loanMarket-app/templates/loginHome.html',
+					data:{
+						'page':'homePage'
+					}
+                });
+            }
+
+
+
+        }
+    })
+</script>
+
+</html>

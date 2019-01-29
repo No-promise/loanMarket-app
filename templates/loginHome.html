@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>首页</title>
+    <!-- <script src="../js/common/setDpr.js"></script> -->
+    <link rel="stylesheet" href="../css/common/common.css">
+    <link rel="stylesheet" href="../css/common/weui.css">
+	<script src="../js/common/polyfill.min.js"></script>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+
+        body {
+            background: #fff;
+        }
+
+        #root {
+        }
+		.bgHome {
+			padding-top: 1.3rem;
+			background-image: url(../img/order/bgLogin.png);
+			background-size: cover;
+		}
+        /* topTitle */
+        .topTitle {
+            margin-bottom: 18px;
+        }
+
+        .topTitle p:nth-of-type(1) {
+            font-size: 32px;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+
+        .topTitle p:nth-of-type(2),
+        .topTitle p:nth-of-type(3) {
+            font-size: 16px;
+            color: #fff;
+        }
+
+        /* feature */
+		.feature {
+            padding: 0 .8rem;
+            box-sizing: border-box;
+        }
+        .feature li img {
+            width: 37px;
+            height: 37px;
+        }
+
+        .feature li p {
+            color: #fff;
+			font-size: 12px;
+        }
+
+        /* homeBanner */
+        .homeBanner {
+            height: 84px;
+            width: 100%;
+            padding-top: 54px;
+            box-sizing: border-box;
+            /* background-image: url('../img/order/homeBanner.png');
+            background-size: cover; */
+        }
+
+        .homeBanner p {
+            color: rgba(255,255,255,.9);
+            font-size: 12px;
+            text-align: center;
+        }
+
+        /* select */
+        .selectNum {
+            padding: 22px 25px;
+        }
+        .weui-slider-box__value p {
+            color: #353535;
+        }
+        #sliderPrice {
+            /* color: #353535; */
+            font-size: 24px;
+            font-weight: bold;
+        }
+        #sliderDate {
+            /* color: #353535; */
+            font-size: 21px;
+        }
+        .optionNums span ,
+        .optionTime span {
+            font-size: 14px;
+            color: #888;
+			margin: 0 1rem;
+        }
+        .apply {
+            width: 100%;
+        }
+        .applyBtn {
+            width: 300px;
+            height: 44px;
+            line-height: 44px;
+            color: #fff;
+            font-size: 18px;
+            background: #1BAC1B;
+            border-radius: 5px;
+        }
+
+        /* navBar */
+        .navBar {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background: #fff;
+			border-top: 1px solid #eee;
+            padding-top: .2rem;
+        }
+        .navBar p {
+            color: #999;
+        }
+        .navBar .home .selectFont {
+            color: #1BAC1B;
+        }
+        .navBarIcon {
+            width: 24px;
+            height: 24px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root" >
+		<div class="bgHome">
+			<div class="topTitle wrapper flex_alcc">
+				<p>金码头</p>
+				<p>资料少,下款快</p>
+				<p>1次信用评估,多家平台响应</p>
+			</div>
+			<ul class="feature row flex_jcsa flex_alcc">
+				<li class="wrapper flex_alcc">
+					<img src="../img/order/homeRisk.png" alt="">
+					<p>风控把关</p>
+				</li>
+				<li class="wrapper flex_alcc">
+					<img src="../img/order/homeMatch.png" alt="">
+					<p>智能匹配</p>
+				</li>
+				<li class="wrapper flex_alcc">
+					<img src="../img/order/homeSpecialty.png" alt="">
+					<p>专业快捷</p>
+				</li>
+			</ul>
+			<div class="homeBanner">
+				<p>人人可借，无抵押无担保</p>
+			</div>
+		</div>
+        <!-- select -->
+        <div class="selectNum">
+            <div class="weui-panel__bd">
+                <div class="weui-slider-box__value">
+                    <p><span id="sliderPrice" ></span> 元 / <span id="sliderDate"></span>期</p>
+                </div>
+                <br>
+                <input hidden="hidden" id="priceSliderValue"><input hidden="hidden" id="dateSliderValue">
+                <div class="weui-slider-box">
+                    <div id="slider_price" class="weui-slider">
+                        <div class="weui-slider__inner">
+                            <div class="weui-slider__track"></div>
+                            <div class="weui-slider__handler"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="optionNums row flex_jcsb">
+                    <span>500元</span> 
+                    <span >10000元</span>
+                </div>
+                
+                <br> 
+                <div class="weui-slider-box">
+                    <div id="slider_date" class="weui-slider">
+                        <div class="weui-slider__inner">
+                            <div class="weui-slider__track"></div>
+                            <div class="weui-slider__handler"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="optionTime row flex_jcsb">
+                    <span>1期</span> 
+                    <span>12期</span>
+                </div>
+                
+            </div>
+        </div>
+        <div class="apply wrapper flex_alcc">
+            <div class="applyBtn text_center" @click="submit()">
+                    立即申请
+            </div>
+        </div>
+
+    </div>
+</body>
+<script src="../js/common/vue.js"></script>
+<script src="../js/common/zepto.min.js"></script>
+<script src="../js/common/weui.min.js"></script>
+<script src="../js/common/JanesiBridges.js"></script>
+<script src="../js/common/common.js"></script>
+<script>
+    var app = new Vue({
+        el: '#root',
+        data: {
+        },
+        created() {
+        },
+        mounted() {
+            weui.slider('#slider_date', {
+                step: 9,
+                defaultValue: 45,
+                onChange: function (percent) {
+                    price = $("#sliderPrice");
+                    date = $("#sliderDate");
+                    if (Math.round(percent) === 0) {
+                        price.text($("#priceSliderValue").val());
+                        date.text(1);
+                        $("#dateSliderValue").val(1)
+                    } else {
+                        price.text($("#priceSliderValue").val());
+                        date.text((Math.round(percent / 9) + 1));
+                        $("#dateSliderValue").val(Math.round(percent / 9) + 1)
+                    }
+                    // console.log(percent);
+                }
+            });
+
+            weui.slider('#slider_price', {
+                step: 5,
+                defaultValue: 50,
+                onChange: function (percent) {
+                    value = $("#sliderValue");
+                    if (Math.round(percent) === 0) {
+                        price.text(500);
+                        date.text($("#dateSliderValue").val());
+                        $("#priceSliderValue").val(500)
+                    } else {
+                        price.text(Math.round(percent) * 100);
+                        date.text($("#dateSliderValue").val());
+                        $("#priceSliderValue").val(Math.round(percent) * 100)
+                    }
+                    // console.log(percent);
+                }
+            });
+
+            // window.JanesiApi.reqUrl = '//118.25.10.151:8803'
+            var that = this
+        },
+        methods: {
+            // 提交申请去智能推荐页
+            submit(){
+                var sliderPrice = document.querySelector('#sliderPrice');
+                var sliderDate = document.querySelector('#sliderDate');
+                var jumpUrl = baseUrlHost + '/intelligentRecommend.html';
+                window.JanesiBridge.callNative('open', {
+                    // 'url':'https://yun.janesi.com/janesi-loanMarket/templates/intelligentRecommend.html'
+                    // 'url': 'loanMarket-app/templates/intelligentRecommend.html'
+					'url':jumpUrl
+                });
+            }
+            
+
+        }
+    })
+</script>
+
+</html>

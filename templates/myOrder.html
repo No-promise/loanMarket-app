@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>我的订单</title>
+    <script src="../js/common/setDpr.js"></script>
+    <link rel="stylesheet" href="../css/common/common.css">
+	<script src="../js/common/polyfill.min.js"></script>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+        #root {
+            /*margin-bottom: 1rem;*/
+        }
+        .orderList {
+            margin-top: .3rem;
+            padding: 0 .3rem;
+            background: #fff;
+        }
+        .orderList .singleList:last-child  {
+            border-bottom: 0;
+        }
+        .singleList {
+            height: 1.84rem;
+            border-bottom: .013333rem solid #eee;
+        }
+
+        .singleList img {
+            width: 1.08rem;
+            height: 1.08rem;
+            border-radius: 50%;
+            margin-right: .38rem;
+        }
+
+        .orderName {
+            width: 4rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: .34rem;
+            color: #333;
+        }
+
+        .orderNums {
+            font-size: .24rem;
+            color: #888;
+            margin-bottom: .1rem;
+        }
+
+        .orderTime {
+            font-size: .24rem;
+            color: #a6a6a6;
+        }
+
+        .followStatus {
+            width: 1.2rem;
+            height: .6rem;
+            line-height: .6rem;
+            font-size: .28rem;
+            color: #fff;
+            border-radius: .1rem;
+            background-color: #00b200;
+        }
+        /* 没有登陆 */
+        .goLogin {
+            width: 2.72rem;
+            height: .8rem;
+            margin-top: .4rem;
+            color: #00b200;
+            color: #fff;
+            font-size: .28rem;
+            line-height: .8rem;
+            background: #00b200;
+            border-radius: .08rem;
+        }
+        /*没有订单时  */
+        .noLogin,
+        .blank_status {
+            height: 100vh;
+            background: #fff;
+        }
+
+        .blank_img {
+            width: 2.4rem;
+            height: 2.4rem;
+        }
+
+        .noFollower {
+            font-size: .32rem;
+            color: #a6a6a6;
+            margin-top: .4rem;
+        }
+
+        /* navBar */
+        .navBar {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1rem;
+            background: #fff;
+        }
+
+        .navBar p {
+            color: #999;
+        }
+
+        .navBar .order .selectFont {
+            color: #1BAC1B;
+        }
+
+        .navBarIcon {
+            width: 0.48rem;
+            height: 0.48rem;
+        }
+    </style>
+    
+</head>
+
+<body>
+    <div id="root">
+        <!-- 没登录时 -->
+        <div class="noLogin wrapper flex_jcc flex_alcc" v-cloak v-show="isLogin">
+            <img class="blank_img" src="../img/order/Shape@2x.png" alt="">
+            <p class="noFollower">没有相关订单</p>
+            <div class="goLogin text_center" @click="goLogin()">
+                登录查看
+            </div>
+        </div>
+        <!-- 登陆 没有订单 -->
+        <div class="blank_status wrapper flex_jcc flex_alcc" v-cloak v-show="noOrders">
+            <img class="blank_img" src="../img/order/Shape@2x.png" alt="">
+            <p class="noFollower">没有相关订单</p>
+        </div>
+        <!-- 订单列表 -->
+        <!--  -->
+        <ul class="orderList wrapper " v-cloak v-show="orderList">
+            <div class="topMargin"></div>
+            <li class="singleList row flex_jcsb flex_alcc" v-for='(item,index) in list' v-cloak>
+                <div class="orderInfo">
+                    <p class="orderName" v-cloak>{{item.name}}</p>
+                    <p class="orderNums" v-cloak>{{item.orderNumber}}</p>
+                    <p class="orderTime" v-cloak>{{item.gmtCreate}}</p>
+                </div>
+                <div class="followStatus text_center" @click="cancelFollow(index)">
+                    去提款
+                </div>
+            </li>
+        </ul>
+
+        <!-- navBar -->
+        <div class="navBar row flex_jcsa">
+            <div class="home wrapper" @click="loginHome()">
+                <img class="navBarIcon" src="../img/order/homeTabBar_gray.png">
+                <p>首页</p>
+            </div>
+            <div class="order wrapper">
+                <img class="navBarIcon" src="../img/order/orderCenter_G.png">
+                <p class="selectFont">订单</p>
+            </div>
+            <div class="personCenter wrapper" @click="personCenter()">
+                <img class="navBarIcon" src="../img/order/personCenter_gray.png" alt="">
+                <p>我的</p>
+            </div>
+
+        </div>
+    </div>
+</body>
+<script src="../js/common/vue.js"></script>
+<script src="../js/common/zepto.min.js"></script>
+<script src="../js/common/JanesiBridges.js"></script>
+<script>
+    var app = new Vue({
+        el: '#root',
+        data: {
+            isLogin: false,
+            noOrders: false,
+            orderList: false,
+            list: [],
+
+        },
+        created() {
+
+        },
+        mounted() {
+            // window.JanesiApi.reqUrl = 'http://118.25.10.151:8091'
+            var that = this
+            // 原生通知是否登陆
+            window.JanesiBridge.callNativeWithCallBack('getUserInfo',{},
+				function(res){
+                    console.log('islogin',res)
+					if(res.Usertype==0){
+						that.isLogin=true;
+					}else {
+						that.getList();
+					}
+            })
+            
+            
+            
+        },
+        methods: {
+            // 获取订单列表
+            getList() {
+                var that = this
+                window.JanesiApi.sendApi('/app/goldenbox/order/list', 'post', {
+                    // userId: 'EIySXIPms/I=', 
+                    lastTime:''
+                }, function (res) {
+                    console.log(res.code)
+                    if(res.code=='0'&&res.result.length==0){
+                        that.noOrders = true;
+                        console.log('noOrders',res)
+                    }else {
+                        that.orderList = true;
+                        that.list = res.result
+                        console.log('orderList',res)
+                    }
+                    
+                })
+            },
+            // 去提款到推荐列表页
+            cancelFollow(index) {
+				var that = this
+				console.log(that.list[index].id)
+				window.JanesiBridge.callNativeWithCallBack('setWebCache',{
+					'storageLevel':'0',
+					'data':{ // 持久化内容为键值对  exp:
+						'orderId':that.list[index].id
+                     }
+					
+				},function(res){
+					if(res){
+						window.JanesiBridge.callNative('open', {
+						    'url': 'loanMarket-app/templates/recommendList.html'
+						});
+					}
+				})
+
+            },
+            // 去登陆
+            goLogin(){
+                window.JanesiBridge.callNative('open', {
+                    'page': 'homePage'
+                });
+            }
+            
+
+        }
+    })
+</script>
+
+</html>

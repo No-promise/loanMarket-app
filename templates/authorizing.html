@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+		<title>认证中</title>
+		<!-- <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/1.1.2/weui.min.css"> -->
+		<link rel="stylesheet" href="../css/index.css">
+		<link rel="stylesheet" href="../css/toast.css">
+		<script src="../js/common/setDpr.js"></script>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			
+			#root {
+				width: 100%;
+				height: 100%;
+				position: relative;
+				background-color: #fff;
+			}
+			
+			.loading {
+				width: 100%;
+				height: 100%;
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+			
+			.loading img {
+				width:2.3rem;
+				height:2.45rem;
+				position: absolute;
+				top: 10%;
+				left: 50%;
+				transform: translateX(-50%);
+			}
+			
+			.loading span {
+				position: absolute;
+				top: 40%;
+				left: 50%;
+				transform: translateX(-50%);
+				font-size: 16px;
+			}
+		</style>
+
+	</head>
+
+	<body>
+		<div id="root">
+			<div class="loading">
+				<img src="../img/authorizing.gif" alt="">
+				<span>正在认证中...</span>
+			</div>
+		</div>
+	</body>
+	<script src="../js/common/vue.js"></script>
+	<script src="../js/common/zepto.min.js">
+	</script>
+	<script src="../js/common/JanesiBridges.js"></script>
+	<script src="../js/toast.js"></script>
+	<script>
+		new Vue({
+			el: '#root',
+			data: {
+				secondPass: '1'
+			},
+			created() {},
+			mounted() {
+				this.getData()
+			},
+			methods: {
+				getData() {
+					var that = this;
+					var operatorPassword=localStorage.getItem('operatorPassword');
+					//第一次发起认证，需要带密码，认证过程中不需要再带密码
+//					var passwordOrnot = localStorage.getItem('passwordOrnot');
+//
+//					if(passwordOrnot) {
+//						operatorPassword = '';
+//					} else if(this.secondPass == '0') {
+//						operatorPassword = '';
+//					} else {
+//						operatorPassword = localStorage.getItem('operatorPassword')
+//						this.secondPass = '0'
+//					}
+					window.JanesiApi.sendApi('/app/goldenbox/user/operator_check', 'post', {
+						'password': operatorPassword,
+					}, function(e) {
+						console.log(e)
+						var timer = '';
+
+						if(e.code == '0') {
+
+							//发送短信，跳转填写验证码页面
+							if(e.result.status == 'sms') {
+								if(timer != '') {
+									clearTimeout(timer)
+								}
+								toast({
+									message: e.result.msg,
+									time: 2000
+								});
+								setTimeout(()=> {
+                                    window.JanesiBridge.callNative('open', {
+									'url': 'loanMarket-app/templates/verification.html'
+									});  
+                                }, 3000);
+								
+
+								//认证过程中，继续调接口
+							} else if(e.result.status == 'processing') {
+								timer = setTimeout(() => {
+									that.getData();
+								}, 5000);
+
+								//任务完成，跳转其他信息页面
+							} else if(e.result.status == 'done') {
+								console.log('DONE')
+								if(timer != '') {
+									clearTimeout(timer)
+								}
+								toast({
+									message: e.result.msg,
+									time: 2000
+								});
+
+								window.JanesiBridge.callNative('open', {
+									'url': 'loanMarket-app/templates/other.html'
+								});
+								//密码错误，跳转重新输入密码页面
+							} else if(e.result.status == 'password') {
+								if(timer != '') {
+									clearTimeout(timer)
+								}
+								toast({
+									message: e.result.msg,
+									time: 2000
+								});
+								setTimeout(()=> {
+                                    window.JanesiBridge.callNative('open', {
+									'url': 'loanMarket-app/templates/updatePassword.html'
+									}); 
+                                }, 3000);
+								
+								//认证失败，跳转运营商页面
+							} else if(e.result.status == 'failed') {
+								setTimeout(() => {
+                                            toast({
+                                                message:e.result.msg,
+                                                time: 2000
+                                            });
+                                        }, 1000);
+								setTimeout(() => {
+									window.JanesiBridge.callNative('close', {});
+								}, 3000);
+							}
+						} else {
+							//系统异常，网络中断等
+							toast({
+								message: e.msg,
+								time: 2000
+							});
+
+						}
+					})
+
+				}
+			}
+
+		})
+	</script>
+
+</html>

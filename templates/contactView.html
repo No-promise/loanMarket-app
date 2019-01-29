@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>联系人信息</title>    
+    <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/1.1.2/weui.min.css">
+    <link rel="stylesheet" href="../css/index.css"> 
+    
+</head>
+<body>
+    <div id="root">
+        
+        <div class="weui-cells totalCess">
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">直系联系人</label></div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>关系</p>
+                </div>
+                <div class="weui-cell__ft" >{{contactType}}</div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>电话</p>
+                </div>
+                <div class="weui-cell__ft" >{{familyTel}}</div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>姓名</p>
+                </div>
+                <div class="weui-cell__ft" >{{familyName}}</div>
+            </div>
+
+    
+        </div>
+
+        <div class="weui-cells">
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">重要联系人</label></div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>关系</p>
+                </div>
+                <div class="weui-cell__ft" >{{importContantType}}</div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>电话</p>
+                </div>
+                <div class="weui-cell__ft" >{{importContantTel}}</div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>姓名</p>
+                </div>
+                <div class="weui-cell__ft" >{{importContantName}}</div>
+            </div>
+
+    
+        </div>
+        
+    </div>
+</body>
+    <script type="text/javascript" src="https://res.wx.qq.com/open/libs/weuijs/1.1.3/weui.min.js"></script>
+    <script src="../js/common/vue.js"></script>
+    <script src="../js/common/zepto.min.js"></script>
+    <script src="../js/common/JanesiBridges.js"></script>
+    <script>
+        new Vue({
+            el:'#root',
+            data:{
+                dataFlag2:'1',
+                importContantType:'',//
+                importContantTel:'',//
+                importContantName:'',//
+                contactType:'',
+                familyTel:'',
+                familyName:''
+            },
+            created(){
+                this.getData();
+            },
+            mounted(){
+                // window.JanesiApi.reqUrl = 'http://10.10.10.81:8091';//声俊
+            },
+            methods:{
+                getData(){
+                    var that=this;
+                    var reqApi = '/app/goldenbox/user/linkman_info';
+                    window.JanesiApi.sendApi(reqApi, 'post', {
+                    }, function (res) {
+                        console.log(res)
+                        if(res.result){
+                        that.contactType=res.result.directRelation;
+                        that.familyTel=res.result.directPhone;
+                        that.familyName=res.result.directName;
+                        that.importContantType=res.result.importRelation;
+                        that.importContantTel=res.result.importPhone;
+                        that.importContantName=res.result.importName;
+                        }
+                    })
+                },
+                
+                
+            }
+        })
+    </script>
+</html>
